@@ -29,3 +29,16 @@ print(cs.is_complete(), cs.degree)
 cs = cpp_low_index.CoveringSubgraph(1, 1)
 cs.add_edge(1, 1, 1)
 print(cs.permutation_rep())
+
+t = cpp_low_index.SimsTree(2, 2, [])
+
+
+#t.pyList()
+
+l = t.list()
+
+print("==============")
+
+for x in l:
+    print(x)
+

@@ -18,9 +18,15 @@ __version__ = "0.0.1"
 
 ext_modules = [
     Pybind11Extension("cpp_low_index",
-        ["cpp_src/wrapModule.cpp",
-         "cpp_src/wrapCoveringSubgraph.cpp",
-         "cpp_src/coveringSubgraph.cpp"],
+        [
+            "cpp_src/coveringSubgraph.cpp",
+            "cpp_src/simsNode.cpp",
+            "cpp_src/simsTree.cpp",
+            "cpp_src/wrapCoveringSubgraph.cpp",
+            "cpp_src/wrapSimsNode.cpp",
+            "cpp_src/wrapSimsTree.cpp",
+            "cpp_src/wrapModule.cpp"
+         ],
         # Example: passing in the version to the compiled code
         define_macros = [('VERSION_INFO', __version__)],
         ),

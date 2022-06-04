@@ -7,19 +7,21 @@
 class CoveringSubgraph
 {
 public:
-    using IntType = unsigned char;
+    using DegreeType = unsigned char;
+    using RankType = unsigned int;
+    using LetterType = std::make_signed<RankType>::type;
 
-    CoveringSubgraph(int rank,
-                     int max_degree,
-                     int num_relators = 0);
+    CoveringSubgraph(RankType rank,
+                     DegreeType max_degree,
+                     unsigned int num_relators = 0);
 
-    const int rank;
-    int degree;
-    const int max_degree;
-    int num_edges;
-    const int num_relators;
-    std::vector<IntType> outgoing;
-    std::vector<IntType> incoming;
+    const RankType rank;
+    DegreeType degree;
+    const DegreeType max_degree;
+    unsigned int num_edges;
+    const unsigned int num_relators;
+    std::vector<DegreeType> outgoing;
+    std::vector<DegreeType> incoming;
 
     int GetRank() const { return rank; }
     
@@ -27,19 +29,23 @@ public:
         return num_edges == rank * degree;
     }
 
-    void add_edge(int letter, int from_vertex, int to_vertex);
-    bool verified_add_edge(int letter, int from_vertex, int to_vertex);
+    void add_edge(LetterType letter, DegreeType from_vertex, DegreeType to_vertex);
+    bool verified_add_edge(LetterType letter, DegreeType from_vertex, DegreeType to_vertex);
 
     std::string to_string() const;
 
     std::vector<std::vector<int>> permutation_rep() const;
-    
+
+    DegreeType act_by(LetterType letter, DegreeType vertex) const;
+
+    std::pair<LetterType, DegreeType> first_empty_slot() const;
+
 protected:
-    int _slot_index;
+    mutable int _slot_index;
 
 private:
     template<bool check>
-    bool _add_edge(int label, int from_vertex, int to_vertex);
+    bool _add_edge(LetterType label, DegreeType from_vertex, DegreeType to_vertex);
 };
 
 #endif
