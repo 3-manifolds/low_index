@@ -11,6 +11,8 @@ Assumes build with::
 import sys
 sys.path.insert(0, './lib_dev')
 import cpp_low_index
+print(cpp_low_index.__doc__)
+print(cpp_low_index.CoveringSubgraph.__init__.__doc__)
 
 cs = cpp_low_index.CoveringSubgraph(8, 4)
 print(cs.rank)
