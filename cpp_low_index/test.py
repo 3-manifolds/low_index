@@ -23,7 +23,7 @@ cs.add_edge(4, 2, 3)
 print(cs.verified_add_edge(2, 1, 2))
 print(cs.verified_add_edge(2, 2, 3))
 
-print(cs.to_string())
+print(cs)
 print(cs.is_complete())
 
 cs = cpp_low_index.CoveringSubgraph(1, 1)
