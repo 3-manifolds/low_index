@@ -10,8 +10,8 @@ public:
              DegreeType max_degree,
              unsigned int num_relators = 0);
 
-    bool relators_may_lift(SimsNode * child,
-                           const std::vector<std::vector<int>> &relators) const;
+    bool relators_lift(const std::vector<std::vector<int>> &relators) const;
+    bool relators_may_lift(const std::vector<std::vector<int>> &relators);
     bool may_be_minimal() const;
 
     std::vector<SimsNode> get_children(

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "simsNode.h"
 
 SimsNode::SimsNode(
@@ -48,7 +46,7 @@ SimsNode::get_children(const std::vector<std::vector<int>> &relators) const
     for (const int n : targets) {
         SimsNode new_subgraph(*this);
         new_subgraph.add_edge(slot.first, slot.second, n);
-        if (relators_may_lift(&new_subgraph, relators)) {
+        if (new_subgraph.relators_may_lift(relators)) {
             if (new_subgraph.may_be_minimal()) {
                 children.push_back(std::move(new_subgraph));
             }
@@ -59,12 +57,10 @@ SimsNode::get_children(const std::vector<std::vector<int>> &relators) const
 }
 
 bool
-SimsNode::relators_may_lift(SimsNode * child,
-                            const std::vector<std::vector<int>> &relators) const
+SimsNode::relators_may_lift(const std::vector<std::vector<int>> &relators)
 {
     for (size_t n = 0; n < relators.size(); n++) {
-        for (unsigned int v = 0; v < child->degree; v++) {
-
+        for (unsigned int v = 0; v < degree; v++) {
             const size_t j = n * max_degree + v;
             
             DegreeType vertex = _lift_vertices[j];
@@ -87,28 +83,49 @@ SimsNode::relators_may_lift(SimsNode * child,
                     vertex = incoming[rank * (vertex - 1) - label - 1];
                 }
                 if (vertex == 0) {
-                    child->_lift_vertices[j] = save;
-                    child->_lift_indices[j] = i;
+                    _lift_vertices[j] = save;
+                    _lift_indices[j] = i;
                     break;
                 }
             }
 
             if (i >= relators[n].size() - 1) {
                 if (vertex == 0) {
-                    if (!child->verified_add_edge(label, save, v + 1)) {
+                    if (!verified_add_edge(label, save, v + 1)) {
                         return false;
                     }
-                    if (child->is_complete()) {
-                        return relators_may_lift(child, relators);
-                    }
+//                    if (is_complete()) {
+//                        return true;
+//                    }
                     vertex = v + 1;
                 }
                 if (vertex == v + 1) {
-                    child->_lift_vertices[j] = 255;
-                    child->_lift_indices[j] = relators[n].size();
+                    _lift_vertices[j] = 255;
+                    _lift_indices[j] = relators[n].size();
                 } else {
                     return false;
                 }
+            }
+        }
+    }
+
+    return true;
+}
+
+bool
+SimsNode::relators_lift(const std::vector<std::vector<int>> &relators) const
+{
+    for (const std::vector<int> &relator : relators) {
+        for (DegreeType v = 1; v <= degree; v++) {
+            DegreeType vertex = v;
+            for (const int letter : relator) {
+                vertex = act_by(letter, vertex);
+                if (vertex == 0) {
+                    throw std::domain_error("relators_lift: The graph is not a covering.");
+                }
+            }
+            if (vertex != v) {
+                return false;
             }
         }
     }
