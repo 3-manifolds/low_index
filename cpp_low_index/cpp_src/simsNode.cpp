@@ -4,7 +4,8 @@ SimsNode::SimsNode(
         const CoveringSubgraph::RankType rank,
         const CoveringSubgraph::DegreeType max_degree,
         const unsigned int num_relators)
- : CoveringSubgraph(rank, max_degree, num_relators)
+ : CoveringSubgraph(rank, max_degree)
+ , num_relators(num_relators)
  , _lift_indices(num_relators * max_degree, 0)
  , _lift_vertices(num_relators * max_degree, 0)
 {
@@ -70,9 +71,9 @@ SimsNode::relators_may_lift(const std::vector<std::vector<int>> &relators)
             if (vertex == 0) {
                 vertex = v + 1;
             }
-            unsigned int i;
-            DegreeType index = _lift_indices[j];
-            DegreeType save;
+            RelatorLengthType i;
+            RelatorLengthType index = _lift_indices[j];
+            RelatorLengthType save;
             int label;
             for (i = index; i < relators[n].size(); i++) {
                 label = relators[n][i];
@@ -94,9 +95,9 @@ SimsNode::relators_may_lift(const std::vector<std::vector<int>> &relators)
                     if (!verified_add_edge(label, save, v + 1)) {
                         return false;
                     }
-//                    if (is_complete()) {
-//                        return true;
-//                    }
+                    // Note that there is an "if child._is_complete(): return self.relators_may_lift(child, relators)"
+                    // in covers.pxi - which I am skipping here.
+                    // I hope that is correct.
                     vertex = v + 1;
                 }
                 if (vertex == v + 1) {

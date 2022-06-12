@@ -3,23 +3,26 @@
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
 class CoveringSubgraph
 {
 public:
-    using DegreeType = unsigned char;
-    using RankType = unsigned int;
+    // Used for degree and cover and also as index for
+    // the vertices of the cover.
+    using DegreeType = uint8_t;
+    // Used for the rank of the group.
+    using RankType = uint16_t;
+    // Used for the letters in the group.
     using LetterType = std::make_signed<RankType>::type;
 
     CoveringSubgraph(RankType rank,
-                     DegreeType max_degree,
-                     unsigned int num_relators = 0);
+                     DegreeType max_degree);
 
     const RankType rank;
     DegreeType degree;
     const DegreeType max_degree;
     unsigned int num_edges;
-    const unsigned int num_relators;
     std::vector<DegreeType> outgoing;
     std::vector<DegreeType> incoming;
 
