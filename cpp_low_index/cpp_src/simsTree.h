@@ -1,7 +1,8 @@
 #ifndef _SIMS_TREE_H
 #define _SIMS_TREE_H
 
-#include "simsNode.h"
+#include "heapedSimsNode.h"
+#include "stackedSimsNode.h"
 
 #include <deque>
 
@@ -9,7 +10,7 @@ class SimsTree
 {
 public:
     SimsTree(
-        const SimsNode &root,
+        const HeapedSimsNode &root,
         const std::vector<std::vector<int>> &short_relators,
         const std::vector<std::vector<int>> &long_relators);
 
@@ -19,17 +20,17 @@ public:
         const std::vector<std::vector<int>> &short_relators,
         const std::vector<std::vector<int>> &long_relators);
 
-    SimsNode root;
+    HeapedSimsNode root;
 
-    std::vector<SimsNode> list();
+    std::vector<HeapedSimsNode> list();
 
-    std::deque<SimsNode> bloom(size_t n);
+    std::deque<HeapedSimsNode> bloom(size_t n);
     
 private:
     const std::vector<std::vector<int>> short_relators;
     const std::vector<std::vector<int>> long_relators;
 
-    void _recurse(const SimsNode &n, std::vector<SimsNode> *nodes);
+    void _recurse(const StackedSimsNode &n, std::vector<HeapedSimsNode> *nodes);
 };
 
 #endif

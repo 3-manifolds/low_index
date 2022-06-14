@@ -4,27 +4,35 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <memory>
 
 class CoveringSubgraph
 {
 public:
-    // Used for degree and cover and also as index for
-    // the vertices of the cover.
+    // Index for vertices and degree of cover.
     using DegreeType = uint8_t;
-    // Used for the rank of the group.
+    // Rank of the group.
     using RankType = uint16_t;
-    // Used for the letters in the group.
+    // Letters in the group, used to label edges.
     using LetterType = std::make_signed<RankType>::type;
 
-    CoveringSubgraph(RankType rank,
-                     DegreeType max_degree);
+protected:
+    CoveringSubgraph(
+        RankType rank,
+        DegreeType max_degree);
 
+    CoveringSubgraph(
+        const CoveringSubgraph &other);
+
+public:
     const RankType rank;
     DegreeType degree;
     const DegreeType max_degree;
     unsigned int num_edges;
-    std::vector<DegreeType> outgoing;
-    std::vector<DegreeType> incoming;
+
+public:
+    DegreeType *outgoing;
+    DegreeType *incoming;
 
     int GetRank() const { return rank; }
     
@@ -46,7 +54,7 @@ public:
 protected:
     mutable int _slot_index;
 
-private:
+    
     template<bool check>
     bool _add_edge(LetterType label, DegreeType from_vertex, DegreeType to_vertex);
 };

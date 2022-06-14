@@ -6,10 +6,11 @@
 
 void addCoveringSubgraph(pybind11::module_ &m) {
     pybind11::class_<CoveringSubgraph>(m, "CoveringSubgraph")
-        .def(pybind11::init<CoveringSubgraph::RankType, CoveringSubgraph::DegreeType>(),
+/*        .def(pybind11::init<CoveringSubgraph::RankType, CoveringSubgraph::DegreeType>(),
              pybind11::arg("rank"),
              pybind11::arg("max_degree"),
              pybind11::doc(R"pbdoc(Partial cover of a subgraph)pbdoc"))
+             pybind11::doc(R"pbdoc(Partial cover of a subgraph)pbdoc")) */
         .def_property_readonly("rank", &CoveringSubgraph::GetRank)
 	.def_readonly("degree", &CoveringSubgraph::degree)
         .def("is_complete", &CoveringSubgraph::is_complete)

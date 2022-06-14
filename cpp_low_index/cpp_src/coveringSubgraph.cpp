@@ -4,15 +4,22 @@
 #include <cstdlib>
 
 CoveringSubgraph::CoveringSubgraph(
-        const CoveringSubgraph::RankType rank,
-        const CoveringSubgraph::DegreeType max_degree)
+        const RankType rank,
+        const DegreeType max_degree)
   : rank(rank)
   , degree(1)
   , max_degree(max_degree)
   , num_edges(0)
-  , outgoing(rank * max_degree, 0)
-  , incoming(rank * max_degree, 0)
   , _slot_index(0)
+{
+}
+
+CoveringSubgraph::CoveringSubgraph(const CoveringSubgraph &other)
+  : rank(other.rank)
+  , degree(other.degree)
+  , max_degree(other.max_degree)
+  , num_edges(other.num_edges)
+  , _slot_index(other._slot_index)
 {
 }
 
@@ -133,12 +140,14 @@ CoveringSubgraph::_add_edge(
         }
     }
 
+    /*
     if (out_index >= outgoing.size()) {
         throw std::domain_error("Bad1");
     }
     if (in_index >= incoming.size()) {
         throw std::domain_error("Bad1");
     }
+    */
     
     outgoing[out_index] = to_vertex;
     incoming[in_index]  = from_vertex;

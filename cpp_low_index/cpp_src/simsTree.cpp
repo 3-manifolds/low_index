@@ -1,7 +1,11 @@
+#include <iostream>
+
 #include "simsTree.h"
+#include "stackedSimsNode.h"
+#include "simsNodeStack.h"
 
 SimsTree::SimsTree(
-    const SimsNode &root,
+    const HeapedSimsNode &root,
     const std::vector<std::vector<int>> &short_relators,
     const std::vector<std::vector<int>> &long_relators)
   : root(root)
@@ -16,24 +20,26 @@ SimsTree::SimsTree(
     const std::vector<std::vector<int>> &short_relators,
     const std::vector<std::vector<int>> &long_relators)
   : SimsTree(
-      SimsNode(rank, max_degree, short_relators.size()),
+      HeapedSimsNode(rank, max_degree, short_relators.size()),
       short_relators,
       long_relators)
 {
 }
 
-std::vector<SimsNode>
+std::vector<HeapedSimsNode>
 SimsTree::list()
 {
-    std::vector<SimsNode> nodes;
+    std::vector<HeapedSimsNode> nodes;
 
-    _recurse(root, &nodes);
+    SimsNodeStack stack(root);
     
+    _recurse(stack.GetNode(), &nodes);
+
     return nodes;
 }
 
 void
-SimsTree::_recurse(const SimsNode &n, std::vector<SimsNode> *nodes)
+SimsTree::_recurse(const StackedSimsNode &n, std::vector<HeapedSimsNode> *nodes)
 {
     if(n.is_complete() && n.relators_lift(long_relators)) {
         nodes->push_back(n);
@@ -46,7 +52,7 @@ SimsTree::_recurse(const SimsNode &n, std::vector<SimsNode> *nodes)
                                                 n.max_degree);
         for (CoveringSubgraph::DegreeType v = 1; v <= m; v++) {
             if (n.act_by(-slot.first, v) == 0) {
-                SimsNode new_subgraph(n);
+                StackedSimsNode new_subgraph(n);
                 new_subgraph.add_edge(slot.first, slot.second, v);
                 if (new_subgraph.relators_may_lift(short_relators)) {
                     if (new_subgraph.may_be_minimal()) {
@@ -58,10 +64,10 @@ SimsTree::_recurse(const SimsNode &n, std::vector<SimsNode> *nodes)
     }
 }
 
-std::deque<SimsNode>
+std::deque<HeapedSimsNode>
 SimsTree::bloom(const size_t n)
 {
-    std::deque<SimsNode> result = { root };
+    std::deque<HeapedSimsNode> result = { root };
 
     bool keepGoing = true;
 

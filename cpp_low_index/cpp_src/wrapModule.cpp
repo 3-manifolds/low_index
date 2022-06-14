@@ -2,6 +2,7 @@
 
 void addCoveringSubgraph(pybind11::module_ &m);
 void addSimsNode(pybind11::module_ &m);
+void addHeapedSimsNode(pybind11::module_ &m);
 void addSimsTree(pybind11::module_ &m);
 
 PYBIND11_MODULE(cpp_low_index, m) {
@@ -13,5 +14,6 @@ A C++ reimplementation of `low_index`.
 )pbdoc";
     addCoveringSubgraph(m);
     addSimsNode(m);
+    addHeapedSimsNode(m);
     addSimsTree(m);
 }
