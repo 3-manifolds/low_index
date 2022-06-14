@@ -18,9 +18,6 @@ public:
     bool relators_may_lift(const std::vector<std::vector<int>> &relators);
     bool may_be_minimal() const;
 
-    std::vector<SimsNode> get_children(
-        const std::vector<std::vector<int>> &relators) const;
-
 private:
     bool _may_be_minimal(DegreeType basepoint) const;
 

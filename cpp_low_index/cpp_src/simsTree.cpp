@@ -38,8 +38,22 @@ SimsTree::_recurse(const SimsNode &n, std::vector<SimsNode> *nodes)
     if(n.is_complete() && n.relators_lift(long_relators)) {
         nodes->push_back(n);
     } else {
-        for (const SimsNode &child : n.get_children(short_relators)) {
-            _recurse(child, nodes);
+        const std::pair<CoveringSubgraph::LetterType,
+                        CoveringSubgraph::DegreeType> slot =
+            n.first_empty_slot();
+        const CoveringSubgraph::DegreeType m =
+            std::min<CoveringSubgraph::DegreeType>(n.degree + 1,
+                                                n.max_degree);
+        for (CoveringSubgraph::DegreeType v = 1; v <= m; v++) {
+            if (n.act_by(-slot.first, v) == 0) {
+                SimsNode new_subgraph(n);
+                new_subgraph.add_edge(slot.first, slot.second, v);
+                if (new_subgraph.relators_may_lift(short_relators)) {
+                    if (new_subgraph.may_be_minimal()) {
+                        _recurse(new_subgraph, nodes);
+                    }
+                }
+            }
         }
     }
 }
