@@ -11,7 +11,6 @@ public:
     HeapedSimsNode(RankType rank,
                    DegreeType max_degree,
                    unsigned int num_relators);
-
     HeapedSimsNode(const SimsNode &other);
     HeapedSimsNode(const HeapedSimsNode &other);
 

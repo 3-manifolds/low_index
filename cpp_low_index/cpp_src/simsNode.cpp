@@ -57,6 +57,12 @@ void
 SimsNode::_InitializeMemory()
 {
     memset(outgoing, 0, size);
+    for (size_t n = 0; n < num_relators; n++) {
+        for (DegreeType v = 0; v < max_degree; v++) {
+            const size_t j = n * max_degree + v;
+            _lift_vertices[j] = v + 1;
+        }
+    }
 }
 
 void
@@ -105,9 +111,6 @@ SimsNode::_relator_may_lift(
     DegreeType vertex = _lift_vertices[j];
     if (vertex == std::numeric_limits<DegreeType>::max()) {
         return true;
-    }
-    if (vertex == 0) {
-        vertex = v + 1;
     }
     RelatorLengthType i;
     RelatorLengthType index = _lift_indices[j];
