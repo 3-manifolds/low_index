@@ -1,11 +1,11 @@
 #include "heapedSimsNode.h"
 
 void
-HeapedSimsNode::_AllocateMemory()
+HeapedSimsNode::_allocate_memory()
 {
     const _MemoryLayout layout(*this);
     _memory = std::make_unique<uint8_t[]>(layout.size);
-    _ApplyMemoryLayout(layout, _memory.get());
+    _apply_memory_layout(layout, _memory.get());
 }
 
 HeapedSimsNode::HeapedSimsNode(
@@ -14,22 +14,22 @@ HeapedSimsNode::HeapedSimsNode(
     const unsigned int num_relators)
  : SimsNode(rank, max_degree, num_relators)
 {
-    _AllocateMemory();
-    _InitializeMemory();
+    _allocate_memory();
+    _initialize_memory();
 }
 
 HeapedSimsNode::HeapedSimsNode(
     const SimsNode &other)
  : SimsNode(other)
 {
-    _AllocateMemory();
-    _CopyMemory(other);
+    _allocate_memory();
+    _copy_memory(other);
 }
 
 HeapedSimsNode::HeapedSimsNode(
     const HeapedSimsNode &other)
  : SimsNode(other)
 {
-    _AllocateMemory();
-    _CopyMemory(other);
+    _allocate_memory();
+    _copy_memory(other);
 }

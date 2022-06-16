@@ -15,7 +15,7 @@ public:
     HeapedSimsNode(const HeapedSimsNode &other);
 
 private:
-    void _AllocateMemory();
+    void _allocate_memory();
     
     std::unique_ptr<uint8_t[]> _memory;
 };

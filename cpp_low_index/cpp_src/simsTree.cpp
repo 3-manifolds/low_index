@@ -3,6 +3,7 @@
 #include "simsTree.h"
 #include "stackedSimsNode.h"
 #include "simsNodeStack.h"
+#include "stackedSimsNode.h"
 
 SimsTree::SimsTree(
     const HeapedSimsNode &root,
@@ -48,8 +49,9 @@ SimsTree::_recurse(const StackedSimsNode &n, std::vector<HeapedSimsNode> *nodes)
                         CoveringSubgraph::DegreeType> slot =
             n.first_empty_slot();
         const CoveringSubgraph::DegreeType m =
-            std::min<CoveringSubgraph::DegreeType>(n.degree + 1,
-                                                n.max_degree);
+            std::min<CoveringSubgraph::DegreeType>(
+                n.degree() + 1,
+                n.max_degree());
         for (CoveringSubgraph::DegreeType v = 1; v <= m; v++) {
             if (n.act_by(-slot.first, v) == 0) {
                 StackedSimsNode new_subgraph(n);

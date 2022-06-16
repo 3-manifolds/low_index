@@ -2,7 +2,8 @@
 #define _SIMS_TREE_H
 
 #include "heapedSimsNode.h"
-#include "stackedSimsNode.h"
+
+class StackedSimsNode;
 
 #include <deque>
 

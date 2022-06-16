@@ -4,7 +4,7 @@ size_t
 SimsNodeStack::_ComputeMemorySize(const SimsNode &node)
 {
     const StackedSimsNode::_MemoryLayout layout(node);
-    return node.max_degree * node.rank * layout.size;
+    return node.max_degree() * node.rank() * layout.size;
 }
 
 SimsNodeStack::SimsNodeStack(const SimsNode &node)

@@ -2,7 +2,7 @@
 
 template<typename T>
 static
-T* _MovePointer(T* const p, const size_t n)
+T* _move_pointer(T* const p, const size_t n)
 {
     return reinterpret_cast<T*>(reinterpret_cast<uint8_t*>(p) + n);
 }
@@ -10,13 +10,13 @@ T* _MovePointer(T* const p, const size_t n)
 StackedSimsNode::StackedSimsNode(const StackedSimsNode &other)
   : SimsNode(other)
 {
-    outgoing = _MovePointer(other.outgoing, other.size);
-    incoming = _MovePointer(other.incoming, other.size);
-    _lift_indices = _MovePointer(other._lift_indices, other.size);
-    _lift_vertices = _MovePointer(other._lift_vertices, other.size);
-    size = other.size;
+    _outgoing = _move_pointer(other._outgoing, other._memory_size);
+    _incoming = _move_pointer(other._incoming, other._memory_size);
+    _lift_indices = _move_pointer(other._lift_indices, other._memory_size);
+    _lift_vertices = _move_pointer(other._lift_vertices, other._memory_size);
+    _memory_size = other._memory_size;
 
-    _CopyMemory(other);
+    _copy_memory(other);
 }
 
 StackedSimsNode::StackedSimsNode(
@@ -25,6 +25,6 @@ StackedSimsNode::StackedSimsNode(
  : SimsNode(other)
 {
     const _MemoryLayout layout(*this);
-    _ApplyMemoryLayout(layout, memory);
-    _CopyMemory(other);
+    _apply_memory_layout(layout, memory);
+    _copy_memory(other);
 }
