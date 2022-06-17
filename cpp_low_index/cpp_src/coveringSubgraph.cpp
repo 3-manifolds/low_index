@@ -100,13 +100,9 @@ CoveringSubgraph::add_edge(
     const DegreeType to_vertex)
 {
     if (letter < 0) {
-        if(!_add_edge<true>(-letter, to_vertex,   from_vertex)) {
-            throw std::domain_error("Bad add edge.");
-        }
+        _add_edge<false>(-letter, to_vertex,   from_vertex);
     } else {
-        if(!_add_edge<true>( letter, from_vertex, to_vertex)) {
-            throw std::domain_error("Bad add edge.");
-        }
+        _add_edge<false>( letter, from_vertex, to_vertex);
     }
 }
 
