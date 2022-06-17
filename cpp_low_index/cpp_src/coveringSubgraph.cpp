@@ -130,9 +130,6 @@ CoveringSubgraph::_add_edge(
     const DegreeType from_vertex,
     const DegreeType to_vertex)
 {
-    if (from_vertex > _degree || to_vertex > _degree) {
-        _degree++;
-    }
     const unsigned int out_index = (from_vertex - 1) * _rank + (label - 1);
     const unsigned int in_index  = (to_vertex   - 1) * _rank + (label - 1);
     if (check) {
@@ -140,19 +137,13 @@ CoveringSubgraph::_add_edge(
             return false;
         }
     }
-
-    /*
-    if (out_index >= outgoing.size()) {
-        throw std::domain_error("Bad1");
-    }
-    if (in_index >= incoming.size()) {
-        throw std::domain_error("Bad1");
-    }
-    */
     
     _outgoing[out_index] = to_vertex;
     _incoming[in_index]  = from_vertex;
     _num_edges++;
+    if (from_vertex > _degree || to_vertex > _degree) {
+        _degree++;
+    }
     return true;
 }
 
