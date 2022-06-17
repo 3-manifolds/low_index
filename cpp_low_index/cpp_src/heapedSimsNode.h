@@ -13,6 +13,7 @@ public:
                    unsigned int num_relators);
     HeapedSimsNode(const SimsNode &other);
     HeapedSimsNode(const HeapedSimsNode &other);
+    HeapedSimsNode(HeapedSimsNode &&other);
 
 private:
     void _allocate_memory();

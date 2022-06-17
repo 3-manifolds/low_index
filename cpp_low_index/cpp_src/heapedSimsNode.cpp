@@ -30,6 +30,21 @@ HeapedSimsNode::HeapedSimsNode(
     const HeapedSimsNode &other)
  : SimsNode(other)
 {
+    if (!other._memory) {
+        return;
+    }
     _allocate_memory();
     _copy_memory(other);
+}
+
+HeapedSimsNode::HeapedSimsNode(
+    HeapedSimsNode &&other)
+ : SimsNode(other)
+ , _memory(std::move(other._memory))
+{
+    _outgoing = other._outgoing;
+    _incoming = other._incoming;
+    _lift_indices = other._lift_indices;
+    _lift_vertices = other._lift_vertices;
+    _memory_size = other._memory_size;
 }

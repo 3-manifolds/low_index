@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <cstdint>
-#include <memory>
 
 class CoveringSubgraph
 {
