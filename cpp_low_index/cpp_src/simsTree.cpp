@@ -42,8 +42,10 @@ SimsTree::list()
 void
 SimsTree::_recurse(const StackedSimsNode &n, std::vector<HeapedSimsNode> *nodes)
 {
-    if(n.is_complete() && n.relators_lift(long_relators)) {
-        nodes->push_back(n);
+    if(n.is_complete()) {
+        if (n.relators_lift(long_relators)) {
+            nodes->push_back(n);
+        }
     } else {
         const std::pair<CoveringSubgraph::LetterType,
                         CoveringSubgraph::DegreeType> slot =
