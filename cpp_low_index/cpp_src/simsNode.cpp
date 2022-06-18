@@ -3,8 +3,8 @@
 namespace low_index {
 
 SimsNode::SimsNode(
-        const CoveringSubgraph::RankType rank,
-        const CoveringSubgraph::DegreeType max_degree,
+        const RankType rank,
+        const DegreeType max_degree,
         const unsigned int num_relators)
  : CoveringSubgraph(rank, max_degree)
  , _num_relators(num_relators)

@@ -73,7 +73,7 @@ CoveringSubgraph::to_string() const
     return result;
 }
 
-std::vector<std::vector<CoveringSubgraph::DegreeType>>
+std::vector<std::vector<DegreeType>>
 CoveringSubgraph::permutation_rep() const
 {
     if (!is_complete()) {
@@ -150,7 +150,7 @@ CoveringSubgraph::_add_edge(
     return true;
 }
 
-CoveringSubgraph::DegreeType
+DegreeType
 CoveringSubgraph::act_by(const LetterType letter, const DegreeType vertex) const
 {
     if (letter > 0) {
@@ -160,7 +160,7 @@ CoveringSubgraph::act_by(const LetterType letter, const DegreeType vertex) const
     }
 }
 
-std::pair<CoveringSubgraph::LetterType, CoveringSubgraph::DegreeType>
+std::pair<LetterType, DegreeType>
 CoveringSubgraph::first_empty_slot() const
 {
     const unsigned int max_edges = _rank * _degree;

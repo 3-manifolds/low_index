@@ -1,22 +1,16 @@
 #ifndef _COVERING_SUBGRAPH_H_
 #define _COVERING_SUBGRAPH_H_
 
+#include "types.h"
+
 #include <vector>
 #include <string>
-#include <cstdint>
 
 namespace low_index {
 
 class CoveringSubgraph
 {
 public:
-    // Index for vertices and degree of cover.
-    using DegreeType = uint8_t;
-    // Rank of the group.
-    using RankType = uint16_t;
-    // Letters in the group, used to label edges.
-    using LetterType = std::make_signed<RankType>::type;
-
     RankType rank() const { return _rank; }
     DegreeType degree() const { return _degree; }
     DegreeType max_degree() const { return _max_degree; }

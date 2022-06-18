@@ -10,8 +10,8 @@ namespace low_index {
 
 SimsTree::SimsTree(
     const HeapedSimsNode &root,
-    const std::vector<SimsNode::Relator> &short_relators,
-    const std::vector<SimsNode::Relator> &long_relators)
+    const std::vector<Relator> &short_relators,
+    const std::vector<Relator> &long_relators)
   : _short_relators(short_relators)
   , _long_relators(long_relators)
   , _root(root)
@@ -19,10 +19,10 @@ SimsTree::SimsTree(
 }
 
 SimsTree::SimsTree(
-    const SimsNode::RankType rank,
-    const SimsNode::DegreeType max_degree,
-    const std::vector<SimsNode::Relator> &short_relators,
-    const std::vector<SimsNode::Relator> &long_relators)
+    const RankType rank,
+    const DegreeType max_degree,
+    const std::vector<Relator> &short_relators,
+    const std::vector<Relator> &long_relators)
   : SimsTree(
       HeapedSimsNode(rank, max_degree, short_relators.size()),
       short_relators,
@@ -40,14 +40,13 @@ SimsTree::_recurse(
             nodes->push_back(n);
         }
     } else {
-        const std::pair<CoveringSubgraph::LetterType,
-                        CoveringSubgraph::DegreeType> slot =
+        const std::pair<LetterType, DegreeType> slot =
             n.first_empty_slot();
-        const CoveringSubgraph::DegreeType m =
-            std::min<CoveringSubgraph::DegreeType>(
+        const DegreeType m =
+            std::min<DegreeType>(
                 n.degree() + 1,
                 n.max_degree());
-        for (CoveringSubgraph::DegreeType v = 1; v <= m; v++) {
+        for (DegreeType v = 1; v <= m; v++) {
             if (n.act_by(-slot.first, v) == 0) {
                 StackedSimsNode new_subgraph(n);
                 new_subgraph.add_edge(slot.first, slot.second, v);
@@ -84,14 +83,13 @@ SimsTree::_bloom(const size_t n) const
         if (it->is_complete()) {
             ++it;
         } else {
-            const std::pair<CoveringSubgraph::LetterType,
-                            CoveringSubgraph::DegreeType> slot =
+            const std::pair<LetterType, DegreeType> slot =
                 it->first_empty_slot();
-            const CoveringSubgraph::DegreeType m =
-                std::min<CoveringSubgraph::DegreeType>(
+            const DegreeType m =
+                std::min<DegreeType>(
                     it->degree() + 1,
                     it->max_degree());
-            for (CoveringSubgraph::DegreeType v = 1; v <= m; v++) {
+            for (DegreeType v = 1; v <= m; v++) {
                 if (it->act_by(-slot.first, v) == 0) {
                     HeapedSimsNode new_subgraph(*it);
                     new_subgraph.add_edge(slot.first, slot.second, v);

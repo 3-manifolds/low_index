@@ -8,8 +8,6 @@ namespace low_index {
 class SimsNode : public CoveringSubgraph
 {
 public:
-    using RelatorLengthType = uint16_t;
-    using Relator = std::vector<SimsNode::LetterType>;
 
     // Name new_relators_lift to make clear that relators_may_lift always
     // has to be called with the same relators?

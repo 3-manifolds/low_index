@@ -8,8 +8,8 @@ namespace low_index {
 
 void addHeapedSimsNode(pybind11::module_ &m) {
     pybind11::class_<HeapedSimsNode, SimsNode>(m, "HeapedSimsNode")
-        .def(pybind11::init<SimsNode::RankType,
-                            SimsNode::DegreeType,
+        .def(pybind11::init<RankType,
+                            DegreeType,
                             unsigned int>(),
              pybind11::arg("rank"),
              pybind11::arg("max_degree"),

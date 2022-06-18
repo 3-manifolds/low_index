@@ -13,10 +13,10 @@ class SimsTree
 {
 public:
     SimsTree(
-        SimsNode::RankType rank,
-        SimsNode::DegreeType max_degree,
-        const std::vector<SimsNode::Relator> &short_relators,
-        const std::vector<SimsNode::Relator> &long_relators);
+        RankType rank,
+        DegreeType max_degree,
+        const std::vector<Relator> &short_relators,
+        const std::vector<Relator> &long_relators);
 
     std::vector<HeapedSimsNode> list(
         size_t bloom_size,
@@ -25,8 +25,8 @@ public:
 private:
     SimsTree(
         const HeapedSimsNode &root,
-        const std::vector<SimsNode::Relator> &short_relators,
-        const std::vector<SimsNode::Relator> &long_relators);
+        const std::vector<Relator> &short_relators,
+        const std::vector<Relator> &long_relators);
 
     void _recurse(
         const StackedSimsNode &n,
@@ -42,8 +42,8 @@ private:
         std::atomic_size_t * index,
         std::vector<std::vector<HeapedSimsNode>> * nested_result) const;
     
-    const std::vector<SimsNode::Relator> _short_relators;
-    const std::vector<SimsNode::Relator> _long_relators;
+    const std::vector<Relator> _short_relators;
+    const std::vector<Relator> _long_relators;
     const HeapedSimsNode _root;
 };
 
