@@ -55,6 +55,7 @@ private:
     CoveringSubgraph& operator=(const CoveringSubgraph& other) = delete;
 
     template<bool check>
+    inline
     bool _add_edge(LetterType label, DegreeType from_vertex, DegreeType to_vertex);
 
     const RankType _rank;
