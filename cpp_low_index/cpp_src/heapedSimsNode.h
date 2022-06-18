@@ -10,7 +10,7 @@ class HeapedSimsNode : public SimsNode
 public:
     HeapedSimsNode(RankType rank,
                    DegreeType max_degree,
-                   unsigned int num_relators);
+                   unsigned int num_relators = 0);
     HeapedSimsNode(const SimsNode &other);
     HeapedSimsNode(const HeapedSimsNode &other);
     HeapedSimsNode(HeapedSimsNode &&other);
