@@ -7,11 +7,12 @@ class SimsNode : public CoveringSubgraph
 {
 public:
     using RelatorLengthType = uint16_t;
+    using Relator = std::vector<SimsNode::LetterType>;
 
     // Name new_relators_lift to make clear that relators_may_lift always
     // has to be called with the same relators?
-    bool relators_lift(const std::vector<std::vector<int>> &relators) const;
-    bool relators_may_lift(const std::vector<std::vector<int>> &relators);
+    bool relators_lift(const std::vector<Relator> &relators) const;
+    bool relators_may_lift(const std::vector<Relator> &relators);
     bool may_be_minimal() const;
 
     unsigned int num_relators() const { return _num_relators; }
@@ -41,7 +42,7 @@ protected:
 
 private:
     bool _relator_may_lift(
-        const std::vector<int> &relator,
+        const Relator &relator,
         size_t n,
         DegreeType v);
 

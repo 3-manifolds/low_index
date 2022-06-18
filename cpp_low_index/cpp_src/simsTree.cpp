@@ -8,8 +8,8 @@
 
 SimsTree::SimsTree(
     const HeapedSimsNode &root,
-    const std::vector<std::vector<int>> &short_relators,
-    const std::vector<std::vector<int>> &long_relators)
+    const std::vector<SimsNode::Relator> &short_relators,
+    const std::vector<SimsNode::Relator> &long_relators)
   : _short_relators(short_relators)
   , _long_relators(long_relators)
   , _root(root)
@@ -17,10 +17,10 @@ SimsTree::SimsTree(
 }
 
 SimsTree::SimsTree(
-    const int rank,
-    const int max_degree,
-    const std::vector<std::vector<int>> &short_relators,
-    const std::vector<std::vector<int>> &long_relators)
+    const SimsNode::RankType rank,
+    const SimsNode::DegreeType max_degree,
+    const std::vector<SimsNode::Relator> &short_relators,
+    const std::vector<SimsNode::Relator> &long_relators)
   : SimsTree(
       HeapedSimsNode(rank, max_degree, short_relators.size()),
       short_relators,
@@ -127,7 +127,7 @@ SimsTree::_list_single_threaded() const
 
     SimsNodeStack stack(_root);
 
-    _recurse(stack.GetNode(), &nodes);
+    _recurse(stack.get_node(), &nodes);
 
     return nodes;
 }

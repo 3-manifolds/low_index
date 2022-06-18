@@ -71,23 +71,23 @@ CoveringSubgraph::to_string() const
     return result;
 }
 
-std::vector<std::vector<int>>
+std::vector<std::vector<CoveringSubgraph::DegreeType>>
 CoveringSubgraph::permutation_rep() const
 {
     if (!is_complete()) {
         throw std::domain_error("The graph is not a covering.");
     }
 
-    std::vector<std::vector<int>> result;
+    std::vector<std::vector<DegreeType>> result;
     result.reserve(_rank);
     
     for (RankType l = 0; l < _rank; l++) {
-        result.push_back({});
-        std::vector<int> &r = result.back();
+        std::vector<DegreeType> r;
         r.reserve(_degree);
         for (DegreeType v = 0; v < _degree; v++) {
             r.push_back(_outgoing[v * _rank + l] - 1);
         }
+        result.push_back(std::move(r));
     }
             
     return result;

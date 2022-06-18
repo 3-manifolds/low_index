@@ -33,7 +33,7 @@ public:
 
     std::string to_string() const;
 
-    std::vector<std::vector<int>> permutation_rep() const;
+    std::vector<std::vector<DegreeType>> permutation_rep() const;
 
     DegreeType act_by(LetterType letter, DegreeType vertex) const;
 

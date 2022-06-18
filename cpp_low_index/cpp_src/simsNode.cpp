@@ -88,7 +88,7 @@ SimsNode::_copy_memory(const SimsNode &other)
 }
 
 bool
-SimsNode::relators_may_lift(const std::vector<std::vector<int>> &relators)
+SimsNode::relators_may_lift(const std::vector<Relator> &relators)
 {
     for (size_t n = 0; n < relators.size(); n++) {
         for (DegreeType v = 0; v < degree(); v++) {
@@ -102,7 +102,7 @@ SimsNode::relators_may_lift(const std::vector<std::vector<int>> &relators)
 
 bool
 SimsNode::_relator_may_lift(
-    const std::vector<int> &relator,
+    const Relator &relator,
     const size_t n,
     const DegreeType v)
 {
@@ -145,9 +145,9 @@ SimsNode::_relator_may_lift(
 }
 
 bool
-SimsNode::relators_lift(const std::vector<std::vector<int>> &relators) const
+SimsNode::relators_lift(const std::vector<Relator> &relators) const
 {
-    for (const std::vector<int> &relator : relators) {
+    for (const Relator &relator : relators) {
         for (DegreeType v = 1; v <= degree(); v++) {
             DegreeType vertex = v;
             for (const int letter : relator) {
