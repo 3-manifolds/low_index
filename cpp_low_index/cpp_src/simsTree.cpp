@@ -6,6 +6,8 @@
 #include <thread>
 #include <atomic>
 
+namespace low_index {
+
 SimsTree::SimsTree(
     const HeapedSimsNode &root,
     const std::vector<SimsNode::Relator> &short_relators,
@@ -191,3 +193,4 @@ SimsTree::_thread_worker(
     }
 }
 
+} // Namespace low_index

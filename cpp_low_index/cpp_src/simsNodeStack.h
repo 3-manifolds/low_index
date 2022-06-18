@@ -3,6 +3,8 @@
 
 #include "stackedSimsNode.h"
 
+namespace low_index {
+
 class SimsNodeStack
 {
 public:
@@ -20,5 +22,7 @@ private:
     std::unique_ptr<uint8_t[]> _memory;
     StackedSimsNode _node;
 };
+
+} // Namespace low_index
 
 #endif

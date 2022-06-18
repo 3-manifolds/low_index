@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <cstdlib>
 
+namespace low_index {
+
 CoveringSubgraph::CoveringSubgraph(
         const RankType rank,
         const DegreeType max_degree)
@@ -184,3 +186,5 @@ CoveringSubgraph::first_empty_slot() const
 
     return {0, 0};
 }
+
+} // Namespace low_index

@@ -1,5 +1,7 @@
 #include "heapedSimsNode.h"
 
+namespace low_index {
+
 void
 HeapedSimsNode::_allocate_memory()
 {
@@ -48,3 +50,5 @@ HeapedSimsNode::HeapedSimsNode(
     _lift_vertices = other._lift_vertices;
     _memory_size = other._memory_size;
 }
+
+} // Namespace low_index

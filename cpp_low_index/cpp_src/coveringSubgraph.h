@@ -5,6 +5,8 @@
 #include <string>
 #include <cstdint>
 
+namespace low_index {
+
 class CoveringSubgraph
 {
 public:
@@ -71,5 +73,7 @@ private:
 
     mutable int _slot_index;
 };
+
+} // Namespace low_index
 
 #endif

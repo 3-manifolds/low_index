@@ -1,5 +1,7 @@
 #include "simsNodeStack.h"
 
+namespace low_index {
+
 size_t
 SimsNodeStack::_compute_memory_size(const SimsNode &node)
 {
@@ -12,3 +14,5 @@ SimsNodeStack::SimsNodeStack(const SimsNode &node)
   , _node(node, _memory.get())
 {
 }
+
+} // Namespace low_index

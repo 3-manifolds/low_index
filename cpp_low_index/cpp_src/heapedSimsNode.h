@@ -5,6 +5,8 @@
 
 #include <memory>
 
+namespace low_index {
+
 class HeapedSimsNode : public SimsNode
 {
 public:
@@ -20,5 +22,7 @@ private:
     
     std::unique_ptr<uint8_t[]> _memory;
 };
+
+} // Namespace low_index
 
 #endif

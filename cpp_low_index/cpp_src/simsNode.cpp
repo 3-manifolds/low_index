@@ -1,5 +1,7 @@
 #include "simsNode.h"
 
+namespace low_index {
+
 SimsNode::SimsNode(
         const CoveringSubgraph::RankType rank,
         const CoveringSubgraph::DegreeType max_degree,
@@ -219,3 +221,5 @@ SimsNode::_may_be_minimal(const DegreeType basepoint) const
 
     return true;
 }
+
+} // Namespace low_index

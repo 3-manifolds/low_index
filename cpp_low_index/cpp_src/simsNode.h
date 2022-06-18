@@ -3,6 +3,8 @@
 
 #include "coveringSubgraph.h"
 
+namespace low_index {
+
 class SimsNode : public CoveringSubgraph
 {
 public:
@@ -55,5 +57,7 @@ public:
     RelatorLengthType *_lift_indices;
     DegreeType *_lift_vertices;
 };
+
+} // Namespace low_index
 
 #endif

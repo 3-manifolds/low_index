@@ -3,6 +3,8 @@
 
 #include "simsNode.h"
 
+namespace low_index {
+
 class StackedSimsNode : public SimsNode
 {
 public:
@@ -14,5 +16,7 @@ private:
     friend class SimsNodeStack;
     StackedSimsNode(const SimsNode &other, uint8_t * memory);
 };
+
+} // Namespace low_index
 
 #endif

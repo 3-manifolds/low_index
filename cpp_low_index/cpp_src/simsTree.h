@@ -5,6 +5,8 @@
 
 #include <atomic>
 
+namespace low_index {
+
 class StackedSimsNode;
 
 class SimsTree
@@ -44,5 +46,7 @@ private:
     const std::vector<SimsNode::Relator> _long_relators;
     const HeapedSimsNode _root;
 };
+
+} // Namespace low_index
 
 #endif

@@ -4,6 +4,8 @@
 
 #include "pybind11/stl.h"
 
+namespace low_index {
+
 void addSimsTree(pybind11::module_ &m) {
     pybind11::class_<SimsTree>(m, "SimsTree")
         .def(pybind11::init<SimsNode::RankType,
@@ -15,4 +17,6 @@ void addSimsTree(pybind11::module_ &m) {
              pybind11::arg("short_relators"),
              pybind11::arg("long_relators"))
         .def("list", &SimsTree::list);
+}
+
 }

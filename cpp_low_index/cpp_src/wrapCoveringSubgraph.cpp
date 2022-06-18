@@ -4,6 +4,8 @@
 
 #include "pybind11/stl.h"
 
+namespace low_index {
+
 void addCoveringSubgraph(pybind11::module_ &m) {
     pybind11::class_<CoveringSubgraph>(m, "CoveringSubgraph")
         .def_property_readonly("rank", &CoveringSubgraph::rank)
@@ -16,3 +18,5 @@ void addCoveringSubgraph(pybind11::module_ &m) {
         .def("act_by", &CoveringSubgraph::act_by)
         .def("first_empty_slot", &CoveringSubgraph::first_empty_slot);
 }
+
+} // Namespace low_index

@@ -1,5 +1,7 @@
 #include "stackedSimsNode.h"
 
+namespace low_index {
+
 template<typename T>
 static
 T* _move_pointer(T* const p, const size_t n)
@@ -28,3 +30,5 @@ StackedSimsNode::StackedSimsNode(
     _apply_memory_layout(layout, memory);
     _copy_memory(other);
 }
+
+} // Namespace low_index
