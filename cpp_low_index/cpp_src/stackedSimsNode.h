@@ -1,5 +1,5 @@
-#ifndef _STACKED_SIMS_TREE_H
-#define _STACKED_SIMS_TREE_H
+#ifndef LOW_INDEX_STACKED_SIMS_TREE_H
+#define LOW_INDEX_STACKED_SIMS_TREE_H
 
 #include "simsNode.h"
 

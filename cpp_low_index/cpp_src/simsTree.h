@@ -1,5 +1,5 @@
-#ifndef _SIMS_TREE_H
-#define _SIMS_TREE_H
+#ifndef LOW_INDEX_SIMS_TREE_H
+#define LOW_INDEX_SIMS_TREE_H
 
 #include "heapedSimsNode.h"
 

@@ -1,5 +1,5 @@
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#ifndef LOW_INDEX_TYPES_H
+#define LOW_INDEX_TYPES_H
 
 #include <cstdint>
 #include <type_traits>

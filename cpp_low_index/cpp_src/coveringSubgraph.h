@@ -1,5 +1,5 @@
-#ifndef _COVERING_SUBGRAPH_H_
-#define _COVERING_SUBGRAPH_H_
+#ifndef LOW_INDEX_COVERING_SUBGRAPH_H
+#define LOW_INDEX_COVERING_SUBGRAPH_H
 
 #include "types.h"
 

@@ -1,5 +1,5 @@
-#ifndef _SIMS_NODE_H_
-#define _SIMS_NODE_H_
+#ifndef LOW_INDEX_SIMS_NODE_H
+#define LOW_INDEX_SIMS_NODE_H
 
 #include "coveringSubgraph.h"
 
