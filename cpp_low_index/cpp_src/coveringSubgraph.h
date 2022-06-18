@@ -54,7 +54,7 @@ protected:
 private:
     CoveringSubgraph& operator=(const CoveringSubgraph& other) = delete;
 
-    template<bool check>
+    template<bool check_incoming, bool check_outgoing>
     inline
     bool _add_edge(LetterType label, DegreeType from_vertex, DegreeType to_vertex);
 

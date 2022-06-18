@@ -100,9 +100,9 @@ CoveringSubgraph::add_edge(
     const DegreeType to_vertex)
 {
     if (letter < 0) {
-        _add_edge<false>(-letter, to_vertex,   from_vertex);
+        _add_edge<false, false>(-letter, to_vertex,   from_vertex);
     } else {
-        _add_edge<false>( letter, from_vertex, to_vertex);
+        _add_edge<false, false>( letter, from_vertex, to_vertex);
     }
 }
 
@@ -113,13 +113,13 @@ CoveringSubgraph::verified_add_edge(
     const DegreeType to_vertex)
 {
     if (letter < 0) {
-        return _add_edge<true>(-letter, to_vertex,   from_vertex);
+        return _add_edge<false, true>(-letter, to_vertex,   from_vertex);
     } else {
-        return _add_edge<true>( letter, from_vertex, to_vertex);
+        return _add_edge<true, false>( letter, from_vertex, to_vertex);
     }
 }
 
-template<bool check>
+template<bool check_incoming, bool check_outgoing>
 bool
 CoveringSubgraph::_add_edge(
     const LetterType label,
@@ -128,8 +128,13 @@ CoveringSubgraph::_add_edge(
 {
     const unsigned int out_index = (from_vertex - 1) * _rank + (label - 1);
     const unsigned int in_index  = (to_vertex   - 1) * _rank + (label - 1);
-    if (check) {
-        if (_outgoing[out_index] != 0 || _incoming[in_index] != 0) {
+    if (check_incoming) {
+        if (_incoming[in_index] != 0) {
+            return false;
+        }
+    }
+    if (check_outgoing) {
+        if (_outgoing[out_index] != 0) {
             return false;
         }
     }
