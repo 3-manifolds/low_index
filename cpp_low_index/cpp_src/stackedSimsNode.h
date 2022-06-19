@@ -3,6 +3,8 @@
 
 #include "abstractSimsNode.h"
 
+#include <memory>
+
 namespace low_index {
 
 class StackedSimsNode : public AbstractSimsNode

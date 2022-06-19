@@ -1,5 +1,9 @@
 #include "abstractSimsNode.h"
 
+#include <limits>
+#include <stdexcept>
+#include <cstring>
+
 namespace low_index {
 
 AbstractSimsNode::AbstractSimsNode(
@@ -74,7 +78,7 @@ AbstractSimsNode::_apply_memory_layout(
 void
 AbstractSimsNode::_initialize_memory()
 {
-    memset(_memory_start(), 0, _memory_size);
+    std::memset(_memory_start(), 0, _memory_size);
     for (size_t n = 0; n < _num_relators; n++) {
         for (DegreeType v = 0; v < max_degree(); v++) {
             const size_t j = n * max_degree() + v;
@@ -86,7 +90,7 @@ AbstractSimsNode::_initialize_memory()
 void
 AbstractSimsNode::_copy_memory(const AbstractSimsNode &other)
 {
-    memcpy(_memory_start(), other._memory_start(), _memory_size);
+    std::memcpy(_memory_start(), other._memory_start(), _memory_size);
 }
 
 bool
@@ -185,10 +189,10 @@ bool
 AbstractSimsNode::_may_be_minimal(const DegreeType basepoint) const
 {
     DegreeType std_to_alt[degree()+1];
-    memset(std_to_alt, 0, sizeof(std_to_alt));
+    std::memset(std_to_alt, 0, sizeof(std_to_alt));
 
     DegreeType alt_to_std[degree()+1];
-    memset(alt_to_std, 0, sizeof(alt_to_std));
+    std::memset(alt_to_std, 0, sizeof(alt_to_std));
 
     std_to_alt[basepoint] = 1;
     alt_to_std[1] = basepoint;
