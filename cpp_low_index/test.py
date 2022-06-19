@@ -12,9 +12,9 @@ import sys
 sys.path.insert(0, './lib_dev')
 import cpp_low_index
 print(cpp_low_index.__doc__)
-print(cpp_low_index.HeapedSimsNode.__init__.__doc__)
+print(cpp_low_index.SimsNode.__init__.__doc__)
 
-cs = cpp_low_index.HeapedSimsNode(8, 4)
+cs = cpp_low_index.SimsNode(8, 4)
 print(cs.rank)
 
 cs.add_edge(2, 1, 1)
@@ -26,7 +26,7 @@ print(cs.verified_add_edge(2, 2, 3))
 print(cs)
 print(cs.is_complete(), cs.degree)
 
-cs = cpp_low_index.HeapedSimsNode(1, 1)
+cs = cpp_low_index.SimsNode(1, 1)
 cs.add_edge(1, 1, 1)
 print(cs.permutation_rep())
 

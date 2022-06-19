@@ -10,7 +10,7 @@ T* _move_pointer(T* const p, const size_t n)
 }
 
 StackedSimsNode::StackedSimsNode(const StackedSimsNode &other)
-  : SimsNode(other)
+  : AbstractSimsNode(other)
 {
     _outgoing = _move_pointer(other._outgoing, other._memory_size);
     _incoming = _move_pointer(other._incoming, other._memory_size);
@@ -22,13 +22,26 @@ StackedSimsNode::StackedSimsNode(const StackedSimsNode &other)
 }
 
 StackedSimsNode::StackedSimsNode(
-    const SimsNode &other,
+    const AbstractSimsNode &other,
     uint8_t * const memory)
- : SimsNode(other)
+  : AbstractSimsNode(other)
 {
     const _MemoryLayout layout(*this);
     _apply_memory_layout(layout, memory);
     _copy_memory(other);
+}
+
+size_t
+SimsNodeStack::_compute_memory_size(const AbstractSimsNode &node)
+{
+    const StackedSimsNode::_MemoryLayout layout(node);
+    return (node.max_degree() * node.rank() + 1) * layout.size;
+}
+
+SimsNodeStack::SimsNodeStack(const AbstractSimsNode &node)
+  : _memory(std::make_unique<uint8_t[]>(_compute_memory_size(node)))
+  , _node(node, _memory.get())
+{
 }
 
 } // Namespace low_index
