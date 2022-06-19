@@ -11,11 +11,13 @@ __version__ = "0.0.1"
 ext_modules = [
     Pybind11Extension("cpp_low_index",
         [
+            "cpp_src/lowIndex.cpp",
             "cpp_src/coveringSubgraph.cpp",
             "cpp_src/simsNode.cpp",
             "cpp_src/stackedSimsNode.cpp",
             "cpp_src/abstractSimsNode.cpp",
             "cpp_src/simsTree.cpp",
+            "cpp_src/wrapLowIndex.cpp",
             "cpp_src/wrapCoveringSubgraph.cpp",
             "cpp_src/wrapSimsNode.cpp",
             "cpp_src/wrapAbstractSimsNode.cpp",

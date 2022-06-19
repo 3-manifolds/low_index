@@ -11,8 +11,8 @@ class SimsNode : public AbstractSimsNode
 {
 public:
     SimsNode(RankType rank,
-                   DegreeType max_degree,
-                   unsigned int num_relators = 0);
+             DegreeType max_degree,
+             unsigned int num_relators = 0);
     SimsNode(const AbstractSimsNode &other);
     SimsNode(const SimsNode &other);
     SimsNode(SimsNode &&other);

@@ -115,10 +115,15 @@ SimsTree::list(
     const size_t bloom_size,
     const unsigned int thread_num) const
 {
-    if (bloom_size <= 1 || thread_num <= 1) {
+    const unsigned int resolved_thread_num =
+        (thread_num > 0)
+            ? thread_num
+            : std::thread::hardware_concurrency();
+
+    if (bloom_size <= 1 || resolved_thread_num <= 1) {
         return _list_single_threaded();
     } else {
-        return _list_multi_threaded(bloom_size, thread_num);
+        return _list_multi_threaded(bloom_size, resolved_thread_num);
     }
 }
 
@@ -146,7 +151,7 @@ _merge_vectors(
             result.push_back(std::move(node));
         }
     }
-    
+
     return result;
 }
 
