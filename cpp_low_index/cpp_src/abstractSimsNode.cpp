@@ -145,6 +145,11 @@ AbstractSimsNode::_relator_may_lift(
     if (next_vertex == 0) {
         if (verified_add_edge(relator.back(), vertex, v + 1)) {
             _lift_vertices[j] = finished;
+
+            // Should this return an enum - to indicate to the client
+            // whether we have added an edge and thus need to
+            // run through all vertices and relators one more time?
+
             return true;
         }
     }

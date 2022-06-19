@@ -36,7 +36,10 @@ SimsTree::_recurse(
 {
     if(n.is_complete()) {
         if (n.relators_lift(_long_relators)) {
-            nodes->push_back(n);
+            SimsNode copy(n);
+            if (copy.relators_may_lift(_short_relators)) {
+                nodes->push_back(std::move(copy));
+            }
         }
     } else {
         const std::pair<LetterType, DegreeType> slot =
