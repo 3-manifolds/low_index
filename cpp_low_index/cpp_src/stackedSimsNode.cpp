@@ -39,7 +39,10 @@ SimsNodeStack::_compute_memory_size(const AbstractSimsNode &node)
 }
 
 SimsNodeStack::SimsNodeStack(const AbstractSimsNode &node)
-  : _memory(std::make_unique<uint8_t[]>(_compute_memory_size(node)))
+  // C++11:
+  : _memory(new uint8_t[_compute_memory_size(node)])
+  // C++14 and later:
+//: _memory(std::make_unique<uint8_t[]>(_compute_memory_size(node)))
   , _node(node, _memory.get())
 {
 }

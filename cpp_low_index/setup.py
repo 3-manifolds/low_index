@@ -22,7 +22,7 @@ ext_modules = [
             "cpp_src/wrapSimsTree.cpp",
             "cpp_src/wrapModule.cpp"
          ],
-        cxx_std=14, # C++17 implies macOS 10.14
+        cxx_std=11, # C++17 implies macOS 10.14
         # Example: passing in the version to the compiled code
         define_macros = [('VERSION_INFO', __version__)],
         ),
