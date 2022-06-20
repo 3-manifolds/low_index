@@ -8,6 +8,11 @@
 
 namespace low_index {
 
+Relator
+parse_word(
+    RankType rank,
+    const std::string &word);
+
 std::pair<std::vector<Relator>, std::vector<Relator>>
 compute_short_and_long_relators(
     RankType rank,
@@ -25,6 +30,17 @@ permutation_reps(
     const std::string &strategy = "spinShort",
     size_t bloom_size = 1000,
     unsigned int thread_num = 0);
+
+    std::vector<std::vector<std::vector<DegreeType>>>
+permutation_reps(
+    RankType rank,
+    const std::vector<std::string> &relators,
+    DegreeType max_degree,
+    unsigned int num_long_relators = 0,
+    const std::string &strategy = "spinShort",
+    size_t bloom_size = 1000,
+    unsigned int thread_num = 0);
+
 }
 
 #endif
