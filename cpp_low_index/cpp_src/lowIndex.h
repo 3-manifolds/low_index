@@ -9,7 +9,7 @@
 namespace low_index {
 
 extern const std::string spin_short_strategy;
-constexpr size_t default_bloom_size = 1000;
+constexpr size_t default_bloom_size = 2000;
     
 Relator
 parse_word(
