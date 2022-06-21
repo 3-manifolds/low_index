@@ -10,6 +10,7 @@ CoveringSubgraph::CoveringSubgraph(
         const DegreeType max_degree)
   : _rank(rank)
   , _max_degree(max_degree)
+  // _outgoing and _incoming set by subclass
   , _degree(1)
   , _num_edges(0)
   , _slot_index(0)
@@ -19,6 +20,7 @@ CoveringSubgraph::CoveringSubgraph(
 CoveringSubgraph::CoveringSubgraph(const CoveringSubgraph &other)
   : _rank(other._rank)
   , _max_degree(other._max_degree)
+  // _outgoing and _incoming set by subclass
   , _degree(other._degree)
   , _num_edges(other._num_edges)
   , _slot_index(other._slot_index)
