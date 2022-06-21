@@ -161,6 +161,10 @@ _compute_short_relators_spin_short(
         }
     }
 
+    std::sort(result.begin(), result.end());
+    auto l = std::unique(result.begin(), result.end());
+    result.erase(l, result.end());
+
     return result;
 }
 
