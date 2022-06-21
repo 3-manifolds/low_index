@@ -28,7 +28,7 @@ else:
 ext_modules = [
     Extension(
         # Rename to low_index eventually, replacing the cython implementation
-        name = 'cpp_low_index',
+        name = 'cpp_low_index._low_index',
         sources = sources,
         extra_compile_args = extra_compile_args)
 ]
@@ -41,8 +41,10 @@ setup(
     author = 'Marc Culler and Nathan M. Dunfield and Matthias Goerner',
     author_email = 'culler@uic.edu, nathan@dunfield.info, enischte@gmail.com',
     url="",
-    description="A test project using pybind11",
+    description="A C++ implementation of Sims LOW INDEX algorithm",
     long_description="",
+    packages = ['cpp_low_index'],
+    package_dir = {'cpp_low_index':'python_src'}, 
     ext_modules=ext_modules,
 #    extras_require={"test": "pytest"},
     # Currently, build_ext only provides an optional "highest supported C++

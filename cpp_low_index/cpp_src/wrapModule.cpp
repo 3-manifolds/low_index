@@ -10,7 +10,7 @@ void addSimsTree(pybind11::module_ &m);
 
 }
 
-PYBIND11_MODULE(cpp_low_index, m) {
+PYBIND11_MODULE(_low_index, m) {
     using namespace low_index;
 
     m.doc() = R"pbdoc(
