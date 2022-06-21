@@ -36,7 +36,7 @@ permutation_reps(
     size_t bloom_size = default_bloom_size,
     unsigned int thread_num = 0);
 
-    std::vector<std::vector<std::vector<DegreeType>>>
+std::vector<std::vector<std::vector<DegreeType>>>
 permutation_reps(
     RankType rank,
     const std::vector<std::string> &relators,

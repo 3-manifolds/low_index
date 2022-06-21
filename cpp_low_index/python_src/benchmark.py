@@ -1,7 +1,9 @@
 import os
 import sys
 import time
-from cpp_low_index import *
+import cpp_low_index
+from cpp_low_index import permutation_reps
+from cpp_low_index import benchmark_util
 examples = [
     {
         'group' : 'Fundamental group of K11n34',
@@ -85,14 +87,15 @@ def run_example(ex):
             bloom_size = 2000))
 
 def run_example_low_level(ex):
-    short_relators, long_relators = compute_short_and_long_relators(
-        rank = ex['rank'],
-        relators = [
-            parse_word(ex['rank'], w)
-            for w in ex['short relators'] + ex['long relators']],
-        max_degree = ex['index'],
-        num_long_relators = ex['num_long'])
-    tree = SimsTree(
+    short_relators, long_relators = (
+        cpp_low_index._low_index.compute_short_and_long_relators(
+            rank = ex['rank'],
+            relators = [
+                cpp_low_index._low_index.parse_word(ex['rank'], w)
+                for w in ex['short relators'] + ex['long relators']],
+            max_degree = ex['index'],
+            num_long_relators = ex['num_long']))
+    tree = cpp_low_index._low_index.SimsTree(
         rank = ex['rank'],
         max_degree = ex['index'],
         short_relators = short_relators,
@@ -116,11 +119,11 @@ def run(ex):
     sys.stdout.flush()
 
 if __name__ == '__main__':
-    print(cpu_info(),
+    print(benchmark_util.cpu_info(),
           'with',
           os.cpu_count(),
           'cores (reported by python)/',
-          hardware_concurrency(),
+          cpp_low_index._low_index.hardware_concurrency(),
           'cores (reported by C++)')
     for example in examples:
         run(example)
