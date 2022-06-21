@@ -18,6 +18,9 @@ public:
         const std::vector<Relator> &short_relators,
         const std::vector<Relator> &long_relators);
 
+    /// Set thread_num = 0 to have the number of threads
+    /// determined automatically using
+    /// std::thread::hardware_concurrency().
     std::vector<SimsNode> list(
         size_t bloom_size,
         unsigned int thread_num) const;

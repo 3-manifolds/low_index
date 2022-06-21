@@ -10,7 +10,7 @@ void addLowIndex(pybind11::module_ &m) {
 
     m.attr("spin_short_strategy") = spin_short_strategy;
     m.attr("default_bloom_size") = default_bloom_size;
-    
+
     m.def("parse_word",
           &parse_word,
           pybind11::arg("rank"),
