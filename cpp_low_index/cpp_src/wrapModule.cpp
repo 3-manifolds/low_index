@@ -1,5 +1,7 @@
 #include "pybind11/pybind11.h"
 
+#include <thread>
+
 namespace low_index {
 
 void addLowIndex(pybind11::module_ &m);
@@ -25,4 +27,7 @@ A C++ reimplementation of `low_index`.
     addAbstractSimsNode(m);
     addSimsNode(m);
     addSimsTree(m);
+
+    m.def("hardware_concurrency",
+          &std::thread::hardware_concurrency);
 }

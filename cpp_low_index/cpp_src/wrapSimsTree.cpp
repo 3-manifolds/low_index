@@ -16,7 +16,10 @@ void addSimsTree(pybind11::module_ &m) {
              pybind11::arg("max_degree"),
              pybind11::arg("short_relators"),
              pybind11::arg("long_relators"))
-        .def("list", &SimsTree::list);
+        .def("list",
+             &SimsTree::list,
+             pybind11::arg("bloom_size"),
+             pybind11::arg("thread_num"));
 }
 
 }
