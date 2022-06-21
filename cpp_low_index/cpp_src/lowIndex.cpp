@@ -8,6 +8,8 @@
 
 namespace low_index {
 
+const std::string spin_short_strategy = "spin_short";
+
 Relator
 _parse_numeric_word(
     const RankType rank,
@@ -170,7 +172,7 @@ _compute_short_relators(
     DegreeType max_degree,
     const std::string &strategy)
 {
-    if (strategy == "spinShort") {
+    if (strategy == spin_short_strategy) {
         return _compute_short_relators_spin_short(
             begin, end, max_degree);
     }

@@ -8,6 +8,9 @@ namespace low_index {
 
 void addLowIndex(pybind11::module_ &m) {
 
+    m.attr("spin_short_strategy") = spin_short_strategy;
+    m.attr("default_bloom_size") = default_bloom_size;
+    
     m.def("parse_word",
           &parse_word,
           pybind11::arg("rank"),
@@ -37,8 +40,8 @@ void addLowIndex(pybind11::module_ &m) {
           pybind11::arg("relators"),
           pybind11::arg("max_degree"),
           pybind11::arg("num_long_relators") = 0,
-          pybind11::arg("strategy") = "spinShort",
-          pybind11::arg("bloom_size") = 1000,
+          pybind11::arg("strategy") = spin_short_strategy,
+          pybind11::arg("bloom_size") = default_bloom_size,
           pybind11::arg("thread_num") = 0);
 
     m.def("permutation_reps",
@@ -47,8 +50,8 @@ void addLowIndex(pybind11::module_ &m) {
           pybind11::arg("relators"),
           pybind11::arg("max_degree"),
           pybind11::arg("num_long_relators") = 0,
-          pybind11::arg("strategy") = "spinShort",
-          pybind11::arg("bloom_size") = 1000,
+          pybind11::arg("strategy") = spin_short_strategy,
+          pybind11::arg("bloom_size") = default_bloom_size,
           pybind11::arg("thread_num") = 0);
 }
 
