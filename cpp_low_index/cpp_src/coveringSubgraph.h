@@ -9,10 +9,10 @@
 namespace low_index {
 
 ///
-/// \class CoveringSubgraph
+/// CoveringSubgraph
 ///
-/// Described the following graph:
-/// - The vertices are indexed by 1, 2, ..., degree().
+/// Describes a graph with:
+/// - Vertices indexed by 1, 2, ..., degree().
 ///   Note that degree() can be at most max_degree(). In other words,
 ///   we need to specify the maximal degree when instantiating a
 ///   CoveringSubgraph.
@@ -20,11 +20,12 @@ namespace low_index {
 ///   The value 0 and the maximum value are reservered for special
 ///   purposes, see CoveringSubgraph::act_by and
 ///   AbstractSimsNode::_relator_may_lift.
-/// - The directed edges are labeled by letters 1, 2, ..., rank().
+/// - Directed edges labeled by letters 1, 2, ..., rank().
 ///   Note that there can be at most one directed edge with the
 ///   same label and same starting vertex or same ending vertex,
 ///   respectively. If a directed edge labeled by the letter l is
 ///   flipped, we label it by the inverse letter -l.
+///
 /// We call such a graph complete, if there a directed edge for
 /// each vertex 1, 2, ..., degree() and each letter 1, 2, ..., rank().
 ///
@@ -97,7 +98,7 @@ public:
                   DegreeType to_vertex);
 
     /// Add an edge but only if there is no edge ending at the
-    /// same vertex with the same letter. Return true on success.
+    /// same vertex with the same letter. Returns true on success.
     ///
     /// Note that this is not checking whether there is an edge
     /// already starting at the same vertex with the same letter.

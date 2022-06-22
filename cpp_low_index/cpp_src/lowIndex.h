@@ -6,8 +6,10 @@
 #include <utility>
 #include <string>
 
+/// low_index is a module to compute low-index subgroups.
 namespace low_index {
 
+    
 extern const std::string spin_short_strategy;
 constexpr size_t default_bloom_size = 2000;
     
@@ -24,8 +26,8 @@ compute_short_and_long_relators(
     unsigned int num_long_relators = 0,
     const std::string &strategy = spin_short_strategy);
 
-// thread_num = 0 means that the number of cores will be used
-// as number of threads.
+/// thread_num = 0 means that the number of cores will be used
+/// as number of threads.
 std::vector<std::vector<std::vector<DegreeType>>>
 permutation_reps(
     RankType rank,
