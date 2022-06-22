@@ -3,3 +3,8 @@ dist
 *.c
 *.so
 *.egg-info
+*.aux
+*.log
+*.pdf
+*.synctex.gz
+__pycache__

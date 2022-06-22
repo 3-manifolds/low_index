@@ -1,0 +1,174 @@
+\documentclass[12pt]{article}
+\usepackage[width=6.5in,height=10in]{geometry}
+\usepackage{tgpagella}
+\usepackage{amsthm}
+\usepackage{amsrefs}
+\parindent 0pt 
+\parskip 1ex
+\newtheorem{theorem}{Theorem}
+\begin{document}
+\normalfont
+\title{LOW\_INDEX, Revisited and Implemented}
+\author{Marc Culler, Nathan Dunfield, and Matthias G\"orner}
+\maketitle
+\begin{abstract}\noindent
+This note provides a simple description of Charles Sims' LOW\_INDEX algorithm in terms of elementary covering space theory.  It accompanies a working open source implementation of the algorithm.
+\end{abstract}
+\parindent 0pt 
+\parskip 1ex 
+\section{Introduction}
+
+In his $1994$ memoir \cite[Chapter 5]{Sims} Charles Sims presented a pseudo-code description of an algorithm for enumerating all conjugacy classes of subgroups of a finitely presented group $G$ with index at most a specified integer $N$.  The input to the algorithm is a finite presentation of a group and the output is a system of distinct representatives for conjugacy classes of subgroups of index at most $N$.  He named the algorithm LOW\_INDEX.  The algorithm has been implemented in a number of computer algebra systems, including the proprietary MAGMA system and the open source GAP system.  It is considered to be the most efficient general purpose algorithm for this task.
+
+The description in Sims' book is lengthy and technical, requiring several chapters of preparation before the ideas of the algorithm can be described.  In this note we will present a simplified description of the algorithm which is accessible to anyone who is familiar with the basic theory of covering spaces of graphs as presented in the classic undergraduate text book written by William Massey \cite{Massey}.
+
+Breaking with a long tradition of publishing mathematical algorithms, this note is being published as part of a freely distributable open source implementation of the algorithm which also happens to be faster than any other implementation known to the authors.  The implementation is configured as a package for the Python programming language, based on a Python extension module written in C++ and wrapped using pybind-11.  The package uses parallel computation for optimal speed, but it is actually faster than the implementations mentioned above even when restricted to a single CPU.
+
+\section{Covering Spaces and Conjugacy Classes}
+
+We review the two theorems about covering spaces that will be used in this note.
+The first is what Massey calls the existence theorem for covering spaces.  It
+says that every conjugacy class of subgroups of the fundamental group of a
+connected CW complex contains the image of the fundamental group of a
+covering space under the homomorphishm induced by the covering map.
+
+Since the topological spaces that we consider are all CW complexes, which are
+locally arcwise connected and semi-locally simply-connected, we paraphrase the
+statement to fit our situation.  Note that $(X,x)$ is used to denote a
+topological space $X$ with a chosen base point $x$.  A $0$-cell in a CW-complex
+will be called a {\it vertex}.
+
+\newtheorem*{thm}{Theorem}
+\begin{thm}[\cite{Massey} Theorem 10.2]
+  Let $X$ be a connected CW complex and $x$ a vertex of $X$.  Then given any
+  conjugacy class of subgroups of $\pi_1(X, x)$ there exists a covering map
+  $p:(\tilde X, \tilde x) \to (X, x)$ such that $p_*(\pi_1(\tilde X, \tilde x))$
+  belongs to the given conjugacy class.
+\end{thm}
+
+Combining this with the next result, also paraphrased from \cite{Massey}, we see that
+each conjugacy class in the fundamental group of a connected CW complex can be
+associated to a single covering space, and that every subgroup within the class
+is obtained as the induced image of the fundamental group of that covering space
+with respect to some choice of base point.
+
+\begin{thm}[\cite{Massey} Theorem 4.2]
+  Let $X$ be a connected CW complex and $p:(\tilde X, \tilde x )\to(X, x)$ a
+  covering map, where $x$ is a vertex of $X$. Then the set of subgroups of
+  $\pi_1(X, x)$ which have the form $p_*(\tilde X, \tilde x)$, as $\tilde x$
+  ranges over all vertices of $\tilde X$ which are contained in $p^{-1}(x)$, is
+  exactly a conjugacy class in $\pi_1(X, x)$.
+  \end{thm}
+
+  We are interested in enumerating all conjugacy classes of finite index subgroups
+  of a given finitely presented group $G$ which have index at most $N$.  For a covering map
+  $p:(\tilde X, \tilde x)\to (X, x)$, the index of $p_*(\pi_1(\tilde X, \tilde x))$
+  in $\pi_1(X, x)$ is equal to the degree of the covering.  So our enumeration
+  task can be divided into the following subtasks:
+
+  \begin{itemize}
+  \item Construct a CW-complex $X$ with base vertex $x$ such that
+    $\pi_1(X, x)$ is isomorphic to $G$.
+   \item Describe a way of choosing a canonical base vertex in any
+     covering of $X$ (meaning that each covering has exactly one caononical base vertex).
+   \item Enumerate all covering maps $(\tilde X, \tilde x)\to (X,
+     x)$ of degree at most $N$ such that $\tilde x$ is the canonical base
+     vertex of $\tilde X$
+   \end{itemize}
+
+   \section{Cayley Complexes}
+
+   There is a standard construction of a $2$-dimensional CW-complex whose
+   fundamental group is isomorphic to a given finitely presented group.  The
+   complex is called the {\it Cayley complex} of the presentation, or the {\it
+     presentation complex}.  A description of the construction can be found in
+   Allen Hatcher's textbook on Algebraic Topology \cite[Section 1.3]{Hatcher}.
+   We will review it here, paying attention to some additional combinatorial
+   structure which is inherent in the construction and which will be used in the
+   data structures that appear in our implemention of Sims' algorithm.
+
+   Suppose we are given a presentation with $r$ generators and $k$ relators
+   $|x_1, \ldots, x_r : w_1, \ldots, w_k|$.  The Cayley complex $C$ of this
+   presentation will have one $0$-cell $v$, $r$ $1$-cells $e_1, \ldots, e_r$ and
+   $k$ $2$-cells $d_1, \ldots, d_k$. The attaching map of the $1$-cell $e_i$
+   sends both boundary points of the cell to the vertex.  To describe the
+   attaching map of a $2$-cell it is useful to fix a homeomorphism
+   $h_i : [0,1] \to e_i$ for each $i = 1, \ldots, r$.  By composing $h_i$ with
+   the inclusion map from $e_i$ to the $1$-skeleton $C^{(1)}$ of $C$ we obtain a
+   closed loop $\gamma_i$, based at $v$, in $C^{(1)}$.  The homotopy classes of
+   these loops form a basis of the free group $\pi_1(C^{(1)}, v)$.  If the
+   relator $w_j$ has length $n$ and is expressed as the word
+   $x_{i_1}\cdots x_{i_n}$ then the attaching map for the $2$-cell is the path
+   $\gamma_{i_1}\ast\cdots\ast\gamma_{i_n}$, where $\ast$ denotes the path
+   composition operator.  It is straightforward \cite[Corollary 1.28]{Hatcher}
+   to use the Seifert - Van Kampen Theorem to show that the fundamental group of
+   $C$ is isomorphic to the group given by our presentation, where the
+   isomorphims sends the based homotopy class of $\gamma_i$ to the generator $x_i$.
+
+   This description of $C$ includes some additional structure which will be
+   useful to give a purely combinatorial description of $C$ that can be used in
+   an implementation of Sims' algorithm.  First, each $1$-cell $e_i$ of $C$ is
+   oriented, with the orientation being induced by the homeomorphism $h_i$.
+   This gives the $1$-skeletion of $C$ the structure of a directed graph.
+   Second, each $1$-cell $e_i$ has a label, namely the positive integer
+   $i\in\{1, \ldots, r\}$, giving the $1$-skeleton the structure of a labeled
+   directed graph.  Since the paths $h_i:([0,1], 0)\to (C, v)$ can be lifted to
+   any covering map $(\tilde C, \tilde v) \to (C, v)$, these orientations and
+   labels can be pulled back under a covering map to induce the structure of a
+   labeled directed graph on the $1$-skeleton of any covering space of $C$.
+   
+   \subsection{Restricting to the $1$-skeleton}
+   
+\section{Conventions}
+
+\subsection{Open Cells}
+
+\subsection{Slots}
+
+\subsection{Permutation Representations}
+
+\subsection{The Canonical Base Point}
+
+\section{Description of the Algorithm}
+
+\subsection{The Sims Tree}
+
+\section{Performance}
+
+\begin{bibdiv}
+\begin{biblist}
+\bib{Sims}{book}{
+   author={Sims, Charles C.},
+   title={Computation with finitely presented groups},
+   series={Encyclopedia of Mathematics and its Applications},
+   volume={48},
+   publisher={Cambridge University Press, Cambridge},
+   date={1994},
+   pages={xiii+604},
+   isbn={0-521-43213-8},
+   review={\MR{1267733}},
+   doi={10.1017/CBO9780511574702},
+ }
+\bib{Massey}{book}{
+   author={Massey, William S.},
+   title={Algebraic topology: an introduction},
+   series={Graduate Texts in Mathematics, Vol. 56},
+   note={Reprint of the 1967 edition},
+   publisher={Springer-Verlag, New York-Heidelberg},
+   date={1977},
+   pages={xxi+261 pp. ISBN 0-387-90271-6},
+   review={\MR{0448331}},
+ }
+ \bib{Hatcher}{book}{
+   author={Hatcher, Allen},
+   title={Algebraic topology},
+   publisher={Cambridge University Press, Cambridge},
+   date={2002},
+   pages={xii+544},
+   isbn={0-521-79160-X},
+   isbn={0-521-79540-0},
+   review={\MR{1867354}},
+}
+ \end{biblist}
+\end{bibdiv}
+\end{document}

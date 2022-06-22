@@ -1,12 +1,9 @@
 import os, platform
 
-from ._low_index import *
+from ._low_index import permutation_reps
 __version__ = '1.2'
 
-def version():
-    return __version__
-
-def cpu_info(): 
+def cpu_info():
     if platform.system() == 'Windows': 
         return platform.processor() 
     elif platform.system() == 'Darwin': 
@@ -21,3 +18,4 @@ def cpu_info():
                     return parts[1].strip()
     return 'Unknown CPU'
 
+__all__ = ['permutation_reps']
