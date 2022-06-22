@@ -14,6 +14,8 @@ void addCoveringSubgraph(pybind11::module_ &m) {
                                DOC(low_index, CoveringSubgraph, rank))
 	.def_property_readonly("degree", &CoveringSubgraph::degree,
                                DOC(low_index, CoveringSubgraph, degree))
+	.def_property_readonly("max_degree", &CoveringSubgraph::degree,
+                               DOC(low_index, CoveringSubgraph, max_degree))
         .def("is_complete", &CoveringSubgraph::is_complete,
              DOC(low_index, CoveringSubgraph, is_complete))
         .def("add_edge", &CoveringSubgraph::add_edge,

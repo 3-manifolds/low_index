@@ -161,11 +161,17 @@ private:
 
 protected:
     // To be set by subclass
+    // Stores for each vertex and positive letter, the end point of the edge starting at this vertex.
     DegreeType *_outgoing;
+    // The opposite.
     DegreeType *_incoming;
 
 private:
+    // Current degree of cover, that is the highest vertex
+    // that is the start or end of an edge.
     DegreeType _degree;
+    // Number of edges - counting an edge labeled by a letter and its inverse
+    // as the same edge.
     unsigned int _num_edges;
 
     // A cache storing the last value of first_empty_slot.

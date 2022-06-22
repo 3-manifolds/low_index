@@ -22,6 +22,7 @@ AbstractSimsNode::AbstractSimsNode(
 {
 }
 
+// Make sure n is a multiple of the alignment of T.
 template<typename T>
 static
 size_t
@@ -79,6 +80,9 @@ void
 AbstractSimsNode::_initialize_memory()
 {
     std::memset(_memory_start(), 0, _memory_size);
+
+    // The lift of vertex v + 1 by the empty word is just v + 1.
+    // Use this to initialize _lift_vertices.
     for (size_t n = 0; n < _num_relators; n++) {
         for (DegreeType v = 0; v < max_degree(); v++) {
             const size_t j = n * max_degree() + v;
@@ -118,6 +122,8 @@ AbstractSimsNode::_relator_may_lift(
         std::numeric_limits<DegreeType>::max();
     
     DegreeType vertex = _lift_vertices[j];
+    // We already determined in an earlier run of _relator_may_lift
+    // that this relator lifts.
     if (vertex == finished) {
         return true;
     }
@@ -125,35 +131,56 @@ AbstractSimsNode::_relator_may_lift(
     // Continue lifting the relator where we left of.
     DegreeType next_vertex;
     for (RelatorLengthType i = _lift_indices[j]; true; i++) {
+        // Result of lifting the vertex by the next letter in
+        // the relator.
         next_vertex = act_by(relator[i], vertex);
         if (i == relator.size() - 1) {
+            // We are at the last letter of the relator.
+            // This case is handled specially below.
             break;
         }
         if (next_vertex == 0) {
+            // The is no edge yet corresponding to the next letter by which
+            // we lift the vertex. Store how far we were able to lift the
+            // relator for the next call to _relator_may_lift.
             _lift_vertices[j] = vertex;
             _lift_indices[j] = i;
             return true;
         }
+        // Move on to the next vertex before looking at the next
+        // letter in the relator.
         vertex = next_vertex;
     }
 
+    // We are at the last letter in the relator.
+
     if (next_vertex == v + 1) {
+        // We were able to lift the entire relator and arrived back
+        // at the vetex we started - mark vertex and relator as
+        // checked.
         _lift_vertices[j] = finished;
         return true;
     }
 
     if (next_vertex == 0) {
+        // There is no edge yet from the current vertex labeled by the
+        // last letter. We know that this edge has to end at the
+        // original vertex v + 1 for the relator to lift, so try to add
+        // that edge.
+        //
+        // Note that next_vertex == 0 implies that there is no
+        // edge labeled by the last letter starting from the current vertex.
+        // However, there might be already an edge with this letter ending
+        // at vertex v + 1. That would be a problem, so call verified
+        // edge.
         if (verified_add_edge(relator.back(), vertex, v + 1)) {
+            // Mark vertex and relator as checked.
             _lift_vertices[j] = finished;
-
-            // Should this return an enum - to indicate to the client
-            // whether we have added an edge and thus need to
-            // run through all vertices and relators one more time?
-
             return true;
         }
     }
 
+    // All other cases mean the relator does not lift.
     return false;
 }
 
@@ -162,8 +189,10 @@ AbstractSimsNode::relators_lift(const std::vector<Relator> &relators) const
 {
     for (const Relator &relator : relators) {
         for (DegreeType v = 1; v <= degree(); v++) {
+            // Start with vertex v.
             DegreeType vertex = v;
             for (const int letter : relator) {
+                // Traverse the edges labeled by the letters in the relator.
                 vertex = act_by(letter, vertex);
                 if (vertex == 0) {
                     throw std::domain_error(
