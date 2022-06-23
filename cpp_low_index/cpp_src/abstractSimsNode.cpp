@@ -52,7 +52,7 @@ AbstractSimsNode::_MemoryLayout::_MemoryLayout(
     t = _align<DegreeType>(t);
     lift_vertices_offset = t;
     t += node.num_relators() * node.max_degree() * sizeof(DegreeType);
-    
+
     size = _align<uint64_t>(t);
 }
 
@@ -120,7 +120,7 @@ AbstractSimsNode::_relator_may_lift(
 
     constexpr DegreeType finished =
         std::numeric_limits<DegreeType>::max();
-    
+
     DegreeType vertex = _lift_vertices[j];
     // We already determined in an earlier run of _relator_may_lift
     // that this relator lifts.
@@ -211,6 +211,47 @@ AbstractSimsNode::relators_lift(const std::vector<Relator> &relators) const
 bool
 AbstractSimsNode::may_be_minimal() const
 {
+    // Return False if the subgraph can provably not be extended to a cover
+    // which is minimal in its conjugacy class, True otherwise.
+    //
+    // The ordering of based coverings is given as follows.  Given a covering
+    // with rank R and degree D, consider all pairs (N, L) where N is a vertex
+    // index in [1, D] and L is a signed label in [-R, -1] or [1, R].  Order
+    // the signed labels as 1, -1, 2, -2, ..., R, -R.  Use that to lex order
+    // the 2*D*R pairs (N, L).  For each pair (N, L) assign an edge E(N, L) and
+    // a number s(N, L) as follows:
+    //
+    //     * if L > 0, E(N, L) is the edge with initial vertex N and
+    //       label L and s(N, L) is index of its terminal vertex.
+    //
+    //     * if L < 0, E(N, L) is the edge with terminal vertex N and
+    //       label -L and s(N, L) is the index of its initial vertex.
+    //
+    // The list [s(N, L) for all (N, L)] is the complexity of the covering;
+    // complexities are ordered lexicographically.
+    //
+    // Any conjugate of the subgroup corresponding to a covering graph can be
+    // obtained by changing the basepoint.  A choice of basepoint determines an
+    // indexing of the vertices where the index of a vertex v is the next
+    // available index at the moment when the first E(N, L) having v as its
+    // terminal (initial) vertex if L > 0 (L < 0) is added.  We only enumerate
+    // based coverings for which the basepoint is chosen to minimize
+    // complexity.  The subgroups corresponding to these coverings will then by
+    // unique up to conjugacy.
+    //
+    // Even when working with a proper subgraph of a covering graph (containing
+    // the basepoint) it may be possible to deduce that the subgraph cannot be
+    // extended to a minimal covering.  In such a case the subgraph should not
+    // be added to the Sims tree.  If this test is done at each stage of the
+    // construction of the tree, the complete graphs in the final tree will
+    // automatically be minimal.
+    //
+    // This method iterates through all vertices of the subgraph, constructing
+    // as much as possible of the vertex ordering determined by taking that
+    // vertex as a basepoint.  It returns False as soon as it encounters an
+    // edge which would result in a higher complexity. If no such edge is found
+    // for any choice of basepoint it returns True.
+
     for (DegreeType basepoint = 2; basepoint <= degree(); basepoint++) {
         if (!_may_be_minimal(basepoint)) {
             return false;
@@ -222,37 +263,55 @@ AbstractSimsNode::may_be_minimal() const
 bool
 AbstractSimsNode::_may_be_minimal(const DegreeType basepoint) const
 {
+    // We are working with the standard indexing (determined by putting
+    // the basepoint at vertex 1) and an alternate indexing determined by
+    // a different basepoint.  We construct mappings between the two
+    // indexings and store them in the arrays std_to_alt and
+    // alt_to_std. (For convenience when dealing with 1-based indices,
+    // just ignore the 0 entry).
     DegreeType std_to_alt[degree()+1];
     std::memset(std_to_alt, 0, sizeof(std_to_alt));
 
     DegreeType alt_to_std[degree()+1];
+    // It is not necessary to clear alt_to_std
     std::memset(alt_to_std, 0, sizeof(alt_to_std));
 
+    // Initial state.
     std_to_alt[basepoint] = 1;
     alt_to_std[1] = basepoint;
 
     DegreeType max_index = 1;
 
+    // Iterate over all possible slots
     for (DegreeType slot_vertex = 1; slot_vertex <= degree(); slot_vertex++) {
         for (RankType l = 0; l < rank(); l++) {
             for (const DegreeType * const edges : { _outgoing, _incoming }) {
+                // Check that the slot is filled with repect to both indexings.
                 const DegreeType a = edges[
                     (slot_vertex - 1) * rank() + l];
                 const DegreeType b = edges[
                     (alt_to_std[slot_vertex] - 1) * rank() + l];
                 if (a == 0 or b == 0) {
+                    // The slot was empty in one indexing, so we cannot decide.
                     return true;
                 }
+                // Update the mappings.
                 DegreeType &c = std_to_alt[b];
                 if (c == 0) {
+                    // This edge is the first, with respect to the alternate
+                    // indexing, that is incident to the vertex with standard
+                    // index b.  We now know its alternate index.
                     max_index++;
                     c = max_index;
                     alt_to_std[max_index] = b;
                 }
+                // Compare the old and new indices of the other end of the edge.
                 if (c < a) {
+                    // The new basepoint is better - discard this graph.
                     return false;
                 }
                 if (c > a) {
+                    // The old basepoint is better.
                     return true;
                 }
             }
