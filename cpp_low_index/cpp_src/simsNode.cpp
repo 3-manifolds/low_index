@@ -37,6 +37,16 @@ SimsNode::SimsNode(
             std::to_string(static_cast<int>(
                                std::numeric_limits<DegreeType>::max())));
     }
+    // In mutlti-threaded mode, we don't have a lot of stack space
+    // (e.g., 512kB on MacOS). To avoid a crash when running out of stack,
+    // limit the number of edges. Each stack frame is probably hundreds of
+    // bytes.
+    constexpr int max_num_edges = 1000;
+    if (!(rank * max_degree <= max_num_edges)) {
+        throw std::domain_error(
+            "product of rank and gree can be at most " +
+            std::to_string(max_num_edges));
+    }
 
     _allocate_memory();
     _initialize_memory();
