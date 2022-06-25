@@ -19,9 +19,9 @@ namespace low_index {
 /// lifts. The method relators_may_lift makes use of an acceleration
 /// structure to repeatedly query the same relators and can be called
 /// on an incomplete subgraph. Also note that relators_may_lift can
-/// add edges to the graph itself - called a deducation.
+/// add edges to the graph itself - called a deduction.
 /// relators_lift does not use any acceleration
-/// structure and can only be called on a complete subgraph.
+/// structures and can only be called on a complete subgraph.
 ///
 /// We call the relators passed to relators_may_lift the "short relators"
 /// and the ones passed to relators_lift the "long relators" - even

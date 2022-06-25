@@ -1,200 +1,55 @@
 #include "simsTree.h"
 #include "stackedSimsNode.h"
 
-#include <list>
-#include <thread>
-#include <atomic>
-
 namespace low_index {
-
-SimsTree::SimsTree(
-    const SimsNode &root,
-    const std::vector<Relator> &short_relators,
-    const std::vector<Relator> &long_relators)
-  : _short_relators(short_relators)
-  , _long_relators(long_relators)
-  , _root(root)
-{
-}
 
 SimsTree::SimsTree(
     const RankType rank,
     const DegreeType max_degree,
     const std::vector<Relator> &short_relators,
     const std::vector<Relator> &long_relators)
-  : SimsTree(
-      SimsNode(rank, max_degree, short_relators.size()),
-      short_relators,
-      long_relators)
+  : SimsTreeBase(rank, max_degree, short_relators, long_relators)
 {
 }
 
+std::vector<SimsNode>
+SimsTree::_list()
+{
+    SimsNodeStack stack(_root);
+    _recurse(stack.get_node());
+    return std::move(_complete_nodes);
+}
+
 void
-SimsTree::_recurse(
-    const StackedSimsNode &n,
-    std::vector<SimsNode> *nodes) const
+SimsTree::_recurse(const StackedSimsNode &n)
 {
     if(n.is_complete()) {
-        if (n.relators_lift(_long_relators)) {
-            SimsNode copy(n);
-            if (copy.relators_may_lift(_short_relators)) {
-                nodes->push_back(std::move(copy));
-            }
+        if (!n.relators_lift(_long_relators)) {
+            return;
         }
-    } else {
-        const std::pair<LetterType, DegreeType> slot =
-            n.first_empty_slot();
-        const DegreeType m =
-            std::min<DegreeType>(
-                n.degree() + 1,
-                n.max_degree());
-        for (DegreeType v = 1; v <= m; v++) {
-            if (n.act_by(-slot.first, v) == 0) {
-                StackedSimsNode new_subgraph(n);
-                new_subgraph.add_edge(slot.first, slot.second, v);
-                if (new_subgraph.relators_may_lift(_short_relators)) {
-                    if (new_subgraph.may_be_minimal()) {
-                        _recurse(new_subgraph, nodes);
-                    }
-                }
-            }
+        SimsNode copy(n);
+        if (!copy.relators_may_lift(_short_relators)) {
+            return;
         }
-    }
-}
-
-std::vector<SimsNode>
-SimsTree::_bloom(const size_t n) const
-{
-    std::list<SimsNode> r = { _root };
-
-    auto it = r.begin();
-    bool has_incomplete_node = false;
-
-    while (r.size() < n) {
-        if (it == r.end()) {
-            if (it == r.begin()) {
-                break;
-            }
-            if (!has_incomplete_node) {
-                break;
-            }
-            it = r.begin();
-            has_incomplete_node = false;
-        }
-
-        if (it->is_complete()) {
-            ++it;
-        } else {
-            const std::pair<LetterType, DegreeType> slot =
-                it->first_empty_slot();
-            const DegreeType m =
-                std::min<DegreeType>(
-                    it->degree() + 1,
-                    it->max_degree());
-            for (DegreeType v = 1; v <= m; v++) {
-                if (it->act_by(-slot.first, v) == 0) {
-                    SimsNode new_subgraph(*it);
-                    new_subgraph.add_edge(slot.first, slot.second, v);
-                    if (new_subgraph.relators_may_lift(_short_relators)) {
-                        if (new_subgraph.may_be_minimal()) {
-                            r.insert(it, new_subgraph);
-                            has_incomplete_node = true;
-                        }
-                    }
-                }
-            }
-            it = r.erase(it);
-        }
+        _complete_nodes.push_back(std::move(copy));
+        return;
     }
 
-    return std::vector<SimsNode>(r.begin(), r.end());
-}
-
-std::vector<SimsNode>
-SimsTree::list(
-    const size_t bloom_size,
-    const unsigned int thread_num) const
-{
-    const unsigned int resolved_thread_num =
-        (thread_num > 0)
-            ? thread_num
-            : std::thread::hardware_concurrency();
-
-    if (bloom_size <= 1 || resolved_thread_num <= 1) {
-        return _list_single_threaded();
-    } else {
-        return _list_multi_threaded(bloom_size, resolved_thread_num);
-    }
-}
-
-std::vector<SimsNode>
-SimsTree::_list_single_threaded() const
-{
-    std::vector<SimsNode> nodes;
-
-    SimsNodeStack stack(_root);
-
-    _recurse(stack.get_node(), &nodes);
-
-    return nodes;
-}
-
-static
-std::vector<SimsNode>
-_merge_vectors(
-    std::vector<std::vector<SimsNode>> &&vecs)
-{
-    std::vector<SimsNode> result;
-
-    for (std::vector<SimsNode> &vec : vecs) {
-        for (SimsNode &node : vec) {
-            result.push_back(std::move(node));
+    const std::pair<LetterType, DegreeType> slot = n.first_empty_slot();
+    const DegreeType m = std::min<DegreeType>(n.degree() + 1, n.max_degree());
+    for (DegreeType v = 1; v <= m; v++) {
+        if (n.act_by(-slot.first, v) != 0) {
+            continue;
         }
-    }
-
-    return result;
-}
-
-std::vector<SimsNode>
-SimsTree::_list_multi_threaded(
-    const size_t bloom_size,
-    const unsigned int thread_num) const
-{
-    const std::vector<SimsNode> branches = _bloom(bloom_size);
-    std::vector<std::vector<SimsNode>> nested_result(branches.size());
-
-    std::atomic_size_t index(0);
-
-    std::vector<std::thread> threads;
-    threads.reserve(branches.size());
-    for (unsigned int i = 0; i < thread_num; i++) {
-        threads.emplace_back(
-            &SimsTree::_thread_worker,
-            this, branches, &index, &nested_result);
-    }
-
-    for (std::thread &t : threads) {
-        t.join();
-    }
-
-    return _merge_vectors(std::move(nested_result));
-}
-
-void
-SimsTree::_thread_worker(
-    const std::vector<SimsNode> &branches,
-    std::atomic_size_t * const index,
-    std::vector<std::vector<SimsNode>> * nested_result) const
-{
-    while(true) {
-        const size_t i = (*index)++;
-
-        if (i >= branches.size()) {
-            break;
+        StackedSimsNode new_subgraph(n);
+        new_subgraph.add_edge(slot.first, slot.second, v);
+        if (!new_subgraph.relators_may_lift(_short_relators)) {
+            continue;
         }
-
-        const SimsTree t(branches[i], _short_relators, _long_relators);
-        (*nested_result)[i] = t._list_single_threaded();
+        if (!new_subgraph.may_be_minimal()) {
+            continue;
+        }
+        _recurse(new_subgraph);
     }
 }
 

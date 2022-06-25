@@ -12,11 +12,14 @@ sources = [
     "cpp_src/stackedSimsNode.cpp",
     "cpp_src/abstractSimsNode.cpp",
     "cpp_src/simsTree.cpp",
-    "cpp_src/wrapLowIndex.cpp",
+    "cpp_src/simsTreeMultiThreaded.cpp",
     "cpp_src/wrapCoveringSubgraph.cpp",
-    "cpp_src/wrapSimsNode.cpp",
     "cpp_src/wrapAbstractSimsNode.cpp",
+    "cpp_src/wrapSimsNode.cpp",
+    "cpp_src/wrapSimsTreeBase.cpp",
     "cpp_src/wrapSimsTree.cpp",
+    "cpp_src/wrapSimsTreeMultiThreaded.cpp",
+    "cpp_src/wrapLowIndex.cpp",
     "cpp_src/wrapModule.cpp"
 ]
 

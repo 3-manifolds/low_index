@@ -1,10 +1,12 @@
 #include "lowIndex.h"
 
 #include "simsTree.h"
+#include "simsTreeMultiThreaded.h"
 
 #include <algorithm>
 #include <stdexcept>
 #include <cstdlib>
+#include <thread>
 
 namespace low_index {
 
@@ -223,18 +225,33 @@ permutation_reps(
     const DegreeType max_degree,
     const unsigned int num_long_relators,
     const std::string &strategy,
-    const size_t bloom_size,
     const unsigned int thread_num)
 {
     const std::pair<std::vector<Relator>, std::vector<Relator>> rels =
         compute_short_and_long_relators(
             rank, relators, max_degree, num_long_relators, strategy);
 
-    SimsTree t(rank, max_degree, rels.first, rels.second);
-
     std::vector<std::vector<std::vector<DegreeType>>> result;
 
-    for (const SimsNode &n : t.list(bloom_size, thread_num)) {
+    std::unique_ptr<SimsTreeBase> t;
+
+    const unsigned int resolved_thread_num =
+        (thread_num > 0)
+            ? thread_num
+            : std::thread::hardware_concurrency();
+
+    if (resolved_thread_num > 1) {
+        t.reset(
+            new SimsTreeMultiThreaded(
+                rank, max_degree, rels.first, rels.second,
+                resolved_thread_num));
+    } else {
+        t.reset(
+            new SimsTree(
+                rank, max_degree, rels.first, rels.second));
+    }
+
+    for (const SimsNode &n : t->list()) {
         result.push_back(n.permutation_rep());
     }
 
@@ -248,7 +265,6 @@ permutation_reps(
     const DegreeType max_degree,
     const unsigned int num_long_relators,
     const std::string &strategy,
-    const size_t bloom_size,
     const unsigned int thread_num)
 {
     return permutation_reps(
@@ -257,7 +273,6 @@ permutation_reps(
         max_degree,
         num_long_relators,
         strategy,
-        bloom_size,
         thread_num);
 }
 

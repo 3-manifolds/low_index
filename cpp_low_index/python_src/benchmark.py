@@ -4,6 +4,10 @@ import time
 import cpp_low_index
 from cpp_low_index import permutation_reps
 from cpp_low_index import benchmark_util
+
+use_low_level = False
+low_level_multi_threaded = False
+
 examples = [
     {
         'group' : 'Fundamental group of K11n34',
@@ -83,8 +87,7 @@ def run_example(ex):
             rank = ex['rank'],
             relators = ex['short relators'] + ex['long relators'],
             max_degree = ex['index'],
-            num_long_relators = ex['num_long'],
-            bloom_size = 2000))
+            num_long_relators = ex['num_long']))
 
 def run_example_low_level(ex):
     short_relators, long_relators = (
@@ -95,16 +98,21 @@ def run_example_low_level(ex):
                 for w in ex['short relators'] + ex['long relators']],
             max_degree = ex['index'],
             num_long_relators = ex['num_long']))
-    tree = cpp_low_index._low_index.SimsTree(
-        rank = ex['rank'],
-        max_degree = ex['index'],
-        short_relators = short_relators,
-        long_relators = long_relators)
-    # thread_num = 0 makes SimsTree determine the number of
-    # threads by using std::thread::hardware_concurrency()
-    return len(tree.list(bloom_size = 2000, thread_num = 0))
-
-use_low_level = False
+    if low_level_multi_threaded:
+        tree = cpp_low_index._low_index.SimsTreeMultiThreaded(
+            rank = ex['rank'],
+            max_degree = ex['index'],
+            short_relators = short_relators,
+            long_relators = long_relators,
+            thread_num = cpp_low_index._low_index.hardware_concurrency())
+    else:
+        tree = cpp_low_index._low_index.SimsTree(
+            rank = ex['rank'],
+            max_degree = ex['index'],
+            short_relators = short_relators,
+            long_relators = long_relators)
+        
+    return len(tree.list())
 
 def run(ex):
     print('%s; index = %d.'%(ex['group'], ex['index']))

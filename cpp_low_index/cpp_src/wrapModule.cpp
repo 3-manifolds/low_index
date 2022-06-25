@@ -8,7 +8,9 @@ void addLowIndex(pybind11::module_ &m);
 void addCoveringSubgraph(pybind11::module_ &m);
 void addAbstractSimsNode(pybind11::module_ &m);
 void addSimsNode(pybind11::module_ &m);
+void addSimsTreeBase(pybind11::module_ &m);
 void addSimsTree(pybind11::module_ &m);
+void addSimsTreeMultiThreaded(pybind11::module_ &m);
 
 }
 
@@ -26,7 +28,9 @@ A C++ reimplementation of `low_index`.
     addCoveringSubgraph(m);
     addAbstractSimsNode(m);
     addSimsNode(m);
+    addSimsTreeBase(m);
     addSimsTree(m);
+    addSimsTreeMultiThreaded(m);
 
     m.def("hardware_concurrency",
           &std::thread::hardware_concurrency);
