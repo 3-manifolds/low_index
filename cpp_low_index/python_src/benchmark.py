@@ -85,19 +85,20 @@ def run_example(ex):
     return len(
         permutation_reps(
             rank = ex['rank'],
-            relators = ex['short relators'] + ex['long relators'],
-            max_degree = ex['index'],
-            num_long_relators = ex['num_long']))
+            short_relators = ex['short relators'],
+            long_relators = ex['long relators'],
+            max_degree = ex['index']))
 
 def run_example_low_level(ex):
-    short_relators, long_relators = (
-        cpp_low_index._low_index.compute_short_and_long_relators(
-            rank = ex['rank'],
-            relators = [
-                cpp_low_index._low_index.parse_word(ex['rank'], w)
-                for w in ex['short relators'] + ex['long relators']],
-            max_degree = ex['index'],
-            num_long_relators = ex['num_long']))
+    short_relators = cpp_low_index._low_index.spin(
+        [ cpp_low_index._low_index.parse_word(
+            rank = ex['rank'], word = relator)
+          for relator in ex['short relators'] ],
+        max_degree = ex['index'])
+    long_relators = [
+        cpp_low_index._low_index.parse_word(
+            rank = ex['rank'], word = relator)
+          for relator in ex['long relators'] ]
     if low_level_multi_threaded:
         tree = cpp_low_index._low_index.SimsTreeMultiThreaded(
             rank = ex['rank'],

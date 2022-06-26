@@ -7,6 +7,7 @@ __version__ = "1.2"
 
 sources = [
     "cpp_src/lowIndex.cpp",
+    "cpp_src/words.cpp",
     "cpp_src/coveringSubgraph.cpp",
     "cpp_src/simsNode.cpp",
     "cpp_src/stackedSimsNode.cpp",
@@ -20,6 +21,7 @@ sources = [
     "cpp_src/wrapSimsTree.cpp",
     "cpp_src/wrapSimsTreeMultiThreaded.cpp",
     "cpp_src/wrapLowIndex.cpp",
+    "cpp_src/wrapWords.cpp",
     "cpp_src/wrapModule.cpp"
 ]
 

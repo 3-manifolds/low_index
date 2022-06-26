@@ -1,0 +1,21 @@
+#include "words.h"
+
+#include "pybind11/pybind11.h"
+
+#include "pybind11/stl.h"
+
+namespace low_index {
+
+void addWords(pybind11::module_ &m) {
+    m.def("parse_word",
+          &parse_word,
+          pybind11::arg("rank"),
+          pybind11::arg("word"));
+
+    m.def("spin",
+          &spin,
+          pybind11::arg("relators"),
+          pybind11::arg("max_degree"));
+}
+
+}

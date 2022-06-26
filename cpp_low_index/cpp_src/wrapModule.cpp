@@ -5,6 +5,7 @@
 namespace low_index {
 
 void addLowIndex(pybind11::module_ &m);
+void addWords(pybind11::module_ &m);
 void addCoveringSubgraph(pybind11::module_ &m);
 void addAbstractSimsNode(pybind11::module_ &m);
 void addSimsNode(pybind11::module_ &m);
@@ -25,6 +26,7 @@ A C++ reimplementation of `low_index`.
 )pbdoc";
 
     addLowIndex(m);
+    addWords(m);
     addCoveringSubgraph(m);
     addAbstractSimsNode(m);
     addSimsNode(m);
