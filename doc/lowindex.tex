@@ -2,29 +2,56 @@
 \usepackage[width=6.5in,height=10in]{geometry}
 \usepackage{tgpagella}
 \usepackage{amsthm}
+\usepackage{amsmath}
 \usepackage{amsrefs}
+
 \parindent 0pt 
 \parskip 1ex
 \newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\renewcommand{\tilde}{\widetilde}
 \begin{document}
 \normalfont
-\title{LOW\_INDEX, Revisited and Implemented}
+\title{LOW~INDEX, Revisited and Implemented}
 \author{Marc Culler, Nathan Dunfield, and Matthias G\"orner}
 \maketitle
 \begin{abstract}\noindent
-This note provides a simple description of Charles Sims' LOW\_INDEX algorithm in terms of elementary covering space theory.  It accompanies a working open source implementation of the algorithm.
+  This note provides a simple description of Charles Sims' LOW~INDEX
+  algorithm in terms of elementary covering space theory.  It
+  accompanies a working open source implementation of the algorithm.
 \end{abstract}
 \parindent 0pt 
 \parskip 1ex 
 \section{Introduction}
 
-In his $1994$ memoir \cite[Chapter 5]{Sims} Charles Sims presented a pseudo-code description of an algorithm for enumerating all conjugacy classes of subgroups of a finitely presented group $G$ with index at most a specified integer $N$.  The input to the algorithm is a finite presentation of a group and the output is a system of distinct representatives for conjugacy classes of subgroups of index at most $N$.  He named the algorithm LOW\_INDEX.  The algorithm has been implemented in a number of computer algebra systems, including the proprietary MAGMA system and the open source GAP system.  It is considered to be the most efficient general purpose algorithm for this task.
+In his $1994$ memoir \cite[Chapter 5]{Sims} Charles Sims presented a pseudo-code
+description of an algorithm for enumerating all conjugacy classes of subgroups
+of a finitely presented group $G$ with index at most a specified integer $N$.
+The input to the algorithm is a finite presentation of a group and the output is
+a system of distinct representatives for conjugacy classes of subgroups of index
+at most $N$.  He named the algorithm LOW\_INDEX.  The algorithm has been
+implemented in a number of computer algebra systems, including the proprietary
+MAGMA system and the open source GAP system.  It is considered to be the most
+efficient general purpose algorithm for this task.
 
-The description in Sims' book is lengthy and technical, requiring several chapters of preparation before the ideas of the algorithm can be described.  In this note we will present a simplified description of the algorithm which is accessible to anyone who is familiar with the basic theory of covering spaces of graphs as presented in the classic undergraduate text book written by William Massey \cite{Massey}.
+The description in Sims' book is lengthy and technical, requiring several
+chapters of preparation before the ideas of the algorithm can be described.  In
+this note we will present a simplified description of the algorithm which is
+accessible to anyone who is familiar with the basic theory of covering spaces of
+graphs as presented in the classic undergraduate text book written by William
+Massey \cite{Massey}.
 
-Breaking with a long tradition of publishing mathematical algorithms, this note is being published as part of a freely distributable open source implementation of the algorithm which also happens to be faster than any other implementation known to the authors.  The implementation is configured as a package for the Python programming language, based on a Python extension module written in C++ and wrapped using pybind-11.  The package uses parallel computation for optimal speed, but it is actually faster than the implementations mentioned above even when restricted to a single CPU.
+Breaking with a long tradition in the publication of mathematical algorithms,
+this note is being published as part of a freely distributable open source
+implementation of the algorithm which also happens to be faster than any other
+implementation known to the authors.  The implementation is configured as a
+package for the Python programming language, based on a Python extension module
+written in C++ and wrapped using pybind-11.  The package uses parallel
+computation for optimal speed, but it is actually faster than the
+implementations mentioned above even when restricted to a single CPU.
 
-\section{Covering Spaces and Conjugacy Classes}
+\section{Covering Spaces and Conjugacy Classes}\label{covers}
 
 We review the two theorems about covering spaces that will be used in this note.
 The first is what Massey calls the existence theorem for covering spaces.  It
@@ -36,7 +63,7 @@ Since the topological spaces that we consider are all CW complexes, which are
 locally arcwise connected and semi-locally simply-connected, we paraphrase the
 statement to fit our situation.  Note that $(X,x)$ is used to denote a
 topological space $X$ with a chosen base point $x$.  A $0$-cell in a CW-complex
-will be called a {\it vertex}.
+will be called a {\it vertex} and a $1$-cell will be called an {\it edge}.
 
 \newtheorem*{thm}{Theorem}
 \begin{thm}[\cite{Massey} Theorem 10.2]
@@ -60,11 +87,12 @@ with respect to some choice of base point.
   exactly a conjugacy class in $\pi_1(X, x)$.
   \end{thm}
 
-  We are interested in enumerating all conjugacy classes of finite index subgroups
-  of a given finitely presented group $G$ which have index at most $N$.  For a covering map
-  $p:(\tilde X, \tilde x)\to (X, x)$, the index of $p_*(\pi_1(\tilde X, \tilde x))$
-  in $\pi_1(X, x)$ is equal to the degree of the covering.  So our enumeration
-  task can be divided into the following subtasks:
+  We are interested in enumerating all conjugacy classes of finite index
+  subgroups of a given finitely presented group $G$ which have index at most
+  $N$.  For a covering map $p:(\tilde X, \tilde x)\to (X, x)$, the index of
+  $p_*(\pi_1(\tilde X, \tilde x))$ in $\pi_1(X, x)$ is equal to the degree of
+  the covering.  So our enumeration task can be divided into the following
+  subtasks:
 
   \begin{itemize}
   \item Construct a CW-complex $X$ with base vertex $x$ such that
@@ -89,8 +117,8 @@ with respect to some choice of base point.
 
    Suppose we are given a presentation with $r$ generators and $k$ relators
    $|x_1, \ldots, x_r : w_1, \ldots, w_k|$.  The Cayley complex $C$ of this
-   presentation will have one $0$-cell $v$, $r$ $1$-cells $e_1, \ldots, e_r$ and
-   $k$ $2$-cells $d_1, \ldots, d_k$. The attaching map of the $1$-cell $e_i$
+   presentation will have one $0$-cell $v$, $r$ edges $e_1, \ldots, e_r$ and
+   $k$ $2$-cells $d_1, \ldots, d_k$. The attaching map of the edge $e_i$
    sends both boundary points of the cell to the vertex.  To describe the
    attaching map of a $2$-cell it is useful to fix a homeomorphism
    $h_i : [0,1] \to e_i$ for each $i = 1, \ldots, r$.  By composing $h_i$ with
@@ -107,10 +135,10 @@ with respect to some choice of base point.
 
    This description of $C$ includes some additional structure which will be
    useful to give a purely combinatorial description of $C$ that can be used in
-   an implementation of Sims' algorithm.  First, each $1$-cell $e_i$ of $C$ is
+   an implementation of Sims' algorithm.  First, each edge $e_i$ of $C$ is
    oriented, with the orientation being induced by the homeomorphism $h_i$.
    This gives the $1$-skeletion of $C$ the structure of a directed graph.
-   Second, each $1$-cell $e_i$ has a label, namely the positive integer
+   Second, each edge $e_i$ has a label, namely the positive integer
    $i\in\{1, \ldots, r\}$, giving the $1$-skeleton the structure of a labeled
    directed graph.  Since the paths $h_i:([0,1], 0)\to (C, v)$ can be lifted to
    any covering map $(\tilde C, \tilde v) \to (C, v)$, these orientations and
@@ -118,20 +146,209 @@ with respect to some choice of base point.
    labeled directed graph on the $1$-skeleton of any covering space of $C$.
    
    \subsection{Restricting to the $1$-skeleton}
+
+   Here we make the observation that it is not necessary to work with
+   $2$-dimensional CW complexes in our setting. If $(C, v)$ is the Cayley
+   complex of a finite group presentation with base point at the unique vertex
+   $v$ of $C$, then the $1$-skeleton of any covering space of $(C, v)$ is a
+   covering space of the $1$-skeleton $(C^{(1)}, v)$ of $C$ under the
+   restriction of the covering map.  Moreover it is a covering space with the
+   property:
+   \begin{itemize}
+   \item[$(\ast)$]  The attaching map of each $2$-cell, viewed as a loop in the
+     $1$-skeleton as above, lifts to every vertex in the fiber over $v$.
+   \end{itemize}
+   Conversely, a covering space of $(C^{(1)}, v)$ with the property $(\ast)$
+   arises as the $1$-skeleton of a covering space of $(C, v)$ constructed by
+   attaching a $2$-cell covering $d$ along every lift of the attaching map of $d$
+   for each $2$-cell $d$.
+
+   So, the based finite covering spaces of $(C, v)$ are in one-to-one
+   correspondence with the finite covering spaces of $(C^{(1)}, v)$ which have
+   property $(\ast)$.  The latter can be simply characterized as directed graphs
+   with edges labeled by integers in $\{1, \ldots r\}$ such that each vertex is
+   incident to exactly one incoming edge and one outgoing edge with each label.
+
+   \subsection{Slots}
+
+   Typically one views a CW complex as a quotient space constructed from a
+   disjoint union of compact cells by attaching cells of dimension $n$ to the
+   $(n-1)$-skeleton via their attaching maps.  For our application, however, it
+   will be convenient to work with a decomposition into open subsets (as also is
+   the case when applying the Seifert - Van Kampen Theorem).  We only need to
+   consider connected $1$-dimensional CW complexes, so we limit the discussion
+   to that case.
+
+   Given a finite $1$-dimensional CW complex $C$ with vertices $v_1, \ldots,
+   v_d$ and edges $e_1, \ldots, e_r$ choose a point $p_i$ in the interior of
+   each edge $e_e$ and consider the subspace $V = C - \{p_i, i=1, \ldots, r$.
+   The space $V$ is a union of contractible open sets, each containing exactly
+   one vertex.  Let $N_i$ denote the component of $V$ containing the vertex
+   $V_i$.  The components of $N_i - v_i$ are called the {\it slots} of the
+   vertex $v_i$.  A slot is homeomorphic to the open interval $(0, 1)$.
+   Each edge $e_i$ of $C$ contains exactly two slots.  We may construct $C$
+   as a quotient space of the disjoint union of the sets $N_i$ and the interiors
+   of the edges $e_i$ by identifying each slot with one component of the
+   interior of $e_i - p_i$.
+
+   In our setting each edge is oriented and labelled, where the label of
+   $e_i$ is the integer $i$.  The edge $e_i$ containes two slots.  One of
+   these is called the {\it initial} slot and the other is called the {\it
+     terminal} slot, where the names are chosen so that the points of the
+   initial slot precede those of the terminal slot with respect to the ordering
+   of $e_i$ given by its orientation.  The initial slot in $e_i$ is labeled with
+   the pair of positive integers $(m, i)$ where $N_m$ is the open set as above
+   which contains the slot.  The terminal slot in $e_i$ is labeled by the pair
+   $(n, -i)$, where $N_n$ contains the slot.  Thus we may say that the
+   edge $e_i$ is the outgoing edge at vertex $v_m$ in the slot labeled $i$
+   and also the incoming edge at the vertex $v_n$ in the slot labeled $-i$.
+
+   The labels on the slots are unique and we also impose an ordering on them
+   as follows.  If our CW complex has $d$ vertices and $r$ edges then
+   $$(1, 1) < (1, -1) < \cdots < (1, r) < (1, -r) < \cdots (d, 1) < (d, -1) <
+   \cdots (d, r) < (d, -r) .$$
+
+   This corresponds, in a free group of rank $r$,  to ordering the basis
+   elements and their inverses as:
+   $$x_1 < x_1^{-1} < \cdots x_r < x_r^{-1}.$$
+   This ordering of basis elements has the nice feature that it is preserved
+   under the usual embedding of a free group of rank $r$ into a free group of
+   rank $r+1$.
+
+   \subsection{Covering Subgraphs}
+   The most prevalent object in our implementation of Sims' algorithm is called
+   a {\it covering subgraph}.  We give the definition here.
+
+   Consider a $1$-dimensional CW complex $B$ with one vertex $v$ and $r$ edges
+   which are oriented and labeled by the integers $1, \ldots, r$.  For each edge
+   $e_i$, $i = 1, \ldots, r$, choose a point $p_i$ in the interior of $e_i$.  Let
+   $N = N_v$ be the contractible open neighborhood of $v$ given by
+   $N = B - \{p_1, \ldots, p_r\}$.
+
+   A {\it covering subgraph} $C$ of $B$ with degree $d$ is a connecte
+   topological space constructed from a degree $d$ covering map
+   $p:\tilde B \to B$ where the edges of $\tilde B$ are oriented and labeled by
+   lifting the labels and orientations from $B$.  The space $C$ is given as
+   $\tilde B - P$ where $P$ is some subset of $p^{-1}(\{p_1, \ldots, p_r\})$.
+   The vertices of $C$ are labeled by integers in $\{1, \ldots, d\}$.  Two
+   covering subgraphs are isomorphic if there is a homeomorphism between them
+   which preserverses labels of vertices and edges and preserves the orientations
+   of the edges.
+
+   Abstractly, a covering subgraph can be constructed from a disjoint union of
+   $d$ copies of $N$, named $N_1, \ldots, N_d$, by adding at most $rd$ oriented
+   open edges.  Let us denote the vertex in $N_i$ as $v_i$.
+
+   The construction assumes that each edge has been labeled with an integer in
+   the set $\{1, \ldots, r\}$ in such a way that there are at most $d$ edges
+   with each label.  An open edge labeled $i$ is added by identifying an initial
+   interval of the edge with the slot $(m, i)$ (i.e. the slot in $N_m$ labeled
+   $i$) and a terminal interval of the edge edge with a slot labeled $(n,-i)$.
+   The initial and terminal intervals are obtained as the components of the
+   complement of a point in the open edge.  After making these identifications
+   the covering subgraph will have an edge labeled $i$ from the vertex $v_m$ to
+   the vertex $v_n$.  It is required, of course, that each slot be used by at
+   most one edge and that the resulting space be connected.
+
+   It is immediate from the first description that a covering subgraph $C$ of
+   $B$ with degree $d$ admits a local homeomorphism to $B$, such that the local
+   homeomorphims is a covering map of degree $d$ if and only if $C$ has $rd$
+   edges (i.e. none of the points $p_i$ have been removed).  We define a
+   covering subgraph to be {\it complete} if it has $rd$ edges.  We say that a
+   slot of the covering subgraph $C$ is {\it empty} if there is no edge containing
+   it, i.e. if a point has been removed from the edge in $\tilde B$ containing
+   it.
+
+   In order to implement Sims' algorithm we need a completely combinatorial
+   description of a covering subgraph which, as it turns out, is readily available.
+   A covering subgraph is completely described by specifying the initial and
+   terminal vertices of each of its edges.  This information can be encoded in
+   the {\it outgoing matrix} of the covering subgraph, which is the $r\times d$
+   matrix $\mathop{Out(C)} = (a_{ij})$ defined as follows:
+   \[ a_{ij} =
+     \begin{cases}
+       k & \text{if there is an edge of $C$ labeled $j$ from $v_i$ to $v_k$}\\
+       0 & \text{otherwise}\\
+     \end{cases}
+   \]
+ The analagous $r\times d$ {\it incoming matrix} $\mathop{In(C)} =
+ (a_{ij})$ is defined by
+   \[ a_{ij} =
+     \begin{cases}
+       k & \text{if there is an edge of $C$ labeled $j$ from $v_k$ to $v_i$}\\
+       0 & \text{otherwise}\\
+     \end{cases}
+   \]
+   Either of these matrices describes the covering subgraph, and each can be
+   derived from the other.  However, our implementation of Sims' algorithm
+   actually records both of them, in order to make the process of lifting
+   relators more efficient.  This pair of matrices is equivalent to the
+   ``transition matrix'' that appears in Sims' description of his algorithm, and
+   to the ``coset table'' that appears in some other descriptions of his
+   algorithm.
+       
+   \subsection{The Canonical Base Point}
+   As was mentioned in Section \ref{covers} our scheme for enumerating all
+   conjugacy class of subgroups of index $N$ requires that there be a canonical
+   choice of base point for each finite covering space $\tilde B$ of the CW
+   complex $B$ with $1$ vertex and $r$ directed labeled edges
+   $e_1, \ldots, e_r$.  In this subsection we will describe how to characterize
+   the canonical base point for such a cover.
+
+   So far, each degree $d$ covering space of $B$ that we have discussed has had
+   labeled vertices with labels $1, \ldots, d$.  But these labels were
+   arbitrary.  The first step in describing the canonical base point is to
+   observe that each choice of a base vertex $v_1$ in $\tilde B$ determines a
+   natural labeling of all of the vertices of $\tilde B$ such that $v_1$ has
+   label $1$.  This natural labeling is produced by the following inductive
+   procedure which also generates a sequence of covering subgraphs
+   $C_1, C_2, \ldots, C_{rd} = \tilde B$ such that $C_{i+1}$ is constructed from
+   $C_i$ by adding a single edge and such that each vertex of $C_i$ has the same
+   label $C_{i+1}$ as it had in $C_i$. Recall that we have defined an ordering
+   of the slots of a covering subgraph with labeled vertices.
+   \begin{itemize}
+   \item $C_1$ consists of the vertex $v_1$ and has no edges.
+   \item For $j > 1$ let the first empty slot $s$ in $C_j$ have label $(i, l)$.
+     If $l > 0$ then construct $C_{i+1}$ from $C_i$ by adding the edge $e$
+     of $\tilde B$ whose initial slot is $s$.  If $l < 0$ then construct
+     $C_{i+1}$ from $C_i$ by adding the edge $e$ of $\tilde B$ whose terminal
+     slot is $s$.  If there is a vertex of $C_{i+1}$ which is not a vertex of $C_i$ then
+     assign it the label $1 + V$ where $V$ is the number of vertices of $C_i$.
+   \end{itemize}
+
+   Next suppose that we are given a finite cover $\tilde B$ of $B$ with an
+   arbitrary labeling of its vertices.  Given a slot $s$ with label $(n, l)$ let
+   $E_s$ denote the edge of $\tilde B$ containing $s$.  If $l > 0$ then $E_s$ is an
+   outgoing edge at the vertex with label $n$ and we let $V_s$ denote the
+   label of the terminal vertex of $E_s$.  If $l < 0$ then $E_s$ is an incoming
+   edge at the vertex labeled $n$ and we let $V_s$ denote the label of the
+   initial vertex of $E_s$.  We may then define the {\it complexity} of our
+   vertex labeling to be the tuple of positive numbers $(V_s)$ indexed by the
+   (ordered) slots in $\tilde B$.  The complexities are ordered
+   lexicographically.
+
+   \begin{definition}
+     A vertex $v$ of a finite covering space $\tilde B$ is {\it canonical} if
+     $v$ has minimal complexity among all vertices of $\tilde B$.
+   \end{definition}
+
+   There are two observations to make here.  First, the complexity is an
+   invariant of the isomorphism class of the based covering.  That is, if two
+   vertices $v$ and $w$ generate the same labeling then there is an isomorphism
+   of based coverings from $(\tilde B, v)$ to $(\tilde B, w)$.  Second, the
+   complexity makes sense for a covering subgraph which is not complete,
+   if we extend the definition by defining $V_s$ to be $0$ if the slot $s$ is empty.
+
+   The last observation plays a key r\^ole in the algorithm.  It means that it
+   is possible to determine that a vertex of a covering subgraph could not
+   possibly be canonical in any complete covering subgraph obtained by adding
+   additional edges.  This conclusion follows when the (extended) complexity of
+   the vertex is not minimal among the complexities of all vertices of the
+   covering subgraph.
    
-\section{Conventions}
-
-\subsection{Open Cells}
-
-\subsection{Slots}
-
-\subsection{Permutation Representations}
-
-\subsection{The Canonical Base Point}
-
 \section{Description of the Algorithm}
-
-\subsection{The Sims Tree}
+   \subsection{Permutation Representations}
+   \subsection{The Sims Tree}
 
 \section{Performance}
 
