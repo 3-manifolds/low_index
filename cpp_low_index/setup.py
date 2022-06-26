@@ -14,15 +14,10 @@ sources = [
     "cpp_src/abstractSimsNode.cpp",
     "cpp_src/simsTree.cpp",
     "cpp_src/simsTreeMultiThreaded.cpp",
-    "cpp_src/wrapCoveringSubgraph.cpp",
-    "cpp_src/wrapAbstractSimsNode.cpp",
-    "cpp_src/wrapSimsNode.cpp",
-    "cpp_src/wrapSimsTreeBase.cpp",
-    "cpp_src/wrapSimsTree.cpp",
-    "cpp_src/wrapSimsTreeMultiThreaded.cpp",
-    "cpp_src/wrapLowIndex.cpp",
-    "cpp_src/wrapWords.cpp",
-    "cpp_src/wrapModule.cpp"
+    # The pybind11 headers are somewhat heavy - compiling all pieces
+    # of the python wrapping in the same translation unit speeds up
+    # compilation significantly.
+    "cpp_src/wrapAll.cpp"
 ]
 
 if sys.platform.startswith('win'):
