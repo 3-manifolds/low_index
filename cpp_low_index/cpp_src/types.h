@@ -7,17 +7,20 @@
 
 namespace low_index {
 
-/// Degree of a cover. Also used to index vertices of a
-/// covering graph.
+/// Degree of a covering graph/index of a subgraph.
+/// Also used to index vertices of a covering graph.
 using DegreeType = uint8_t;
+
 /// Rank of a finitely presented group.
 using RankType = uint16_t;
-/// Letters in a finitely presented groups. A negative
-/// number corresponds to an inverse letter.
+
+/// Letters for generators in a finitely presented groups.
+/// A negative number corresponds to an inverse generator.
 using LetterType = std::make_signed<RankType>::type;
 
 /// Length of a word.
 using RelatorLengthType = uint16_t;
+
 /// A word in a finitely presented group.
 using Relator = std::vector<LetterType>;
 

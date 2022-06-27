@@ -19,10 +19,10 @@ PYBIND11_MODULE(_low_index, m) {
     using namespace low_index;
 
     m.doc() = R"pbdoc(
-cpp_low_index
+low_index
 -------------
 
-A C++ reimplementation of `low_index`.
+A module to enumerate low-index subgroups.
 )pbdoc";
 
     addLowIndex(m);
@@ -35,5 +35,6 @@ A C++ reimplementation of `low_index`.
     addSimsTreeMultiThreaded(m);
 
     m.def("hardware_concurrency",
-          &std::thread::hardware_concurrency);
+          &std::thread::hardware_concurrency,
+          R"doc(The number of cores reported by the operating system.)doc");
 }

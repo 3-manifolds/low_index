@@ -14,11 +14,11 @@ void addWords(pybind11::module_ &m) {
           pybind11::arg("word"),
           DOC(low_index, parse_word));
 
-    m.def("spin",
-          &spin,
+    m.def("spin_short",
+          &spin_short,
           pybind11::arg("relators"),
           pybind11::arg("max_degree"),
-          DOC(low_index, spin));
+          DOC(low_index, spin_short));
 }
 
 }

@@ -23,9 +23,14 @@
 #endif
 
 
-static const char *__doc_low_index_parse_word = R"doc()doc";
+static const char *__doc_low_index_parse_word =
+R"doc(Parse a SnapPy-style word. See overloads of permutation_reps for the
+conventions.)doc";
 
-static const char *__doc_low_index_spin = R"doc()doc";
+static const char *__doc_low_index_spin_short =
+R"doc(Given a set of relators, determine their average length. For all
+relators shorter than this average or shorter than max_degree, add all
+their cyclic shifts to the result.)doc";
 
 #if defined(__GNUG__)
 #pragma GCC diagnostic pop

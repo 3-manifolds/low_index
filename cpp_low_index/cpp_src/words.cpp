@@ -1,7 +1,12 @@
 #include "words.h"
 
+#include <algorithm>
+#include <stdexcept>
+#include <cstdlib>
+
 namespace low_index {
 
+/// Parse a word like x1X2
 Relator
 _parse_numeric_word(
     const RankType rank,
@@ -24,7 +29,7 @@ _parse_numeric_word(
                 *p + "'");
         }
         const long value = std::strtol(p, const_cast<char**>(&p), 10);
-        if (value > rank || value <= 0) {
+        if (value > rank || value < 1) {
             throw std::domain_error(
                 std::string("Invalid generator ") +
                 sign + std::to_string(value) +
@@ -41,6 +46,7 @@ _parse_numeric_word(
     return result;
 }
 
+// Parse a word like aB
 Relator
 _parse_alpha_word(
     const RankType rank,
@@ -91,6 +97,7 @@ parse_word(
     }
 }
 
+// Cyclically shift relator by i
 static
 Relator
 _spin_relator(
@@ -103,6 +110,7 @@ _spin_relator(
     return result;
 }
 
+// Add all cyclic shifts of relator to result
 static
 void
 _spin_relator(
@@ -115,8 +123,8 @@ _spin_relator(
 }
 
 std::vector<Relator>
-spin(const std::vector<Relator> &relators,
-     const DegreeType max_degree)
+spin_short(const std::vector<Relator> &relators,
+           const DegreeType max_degree)
 {
     std::vector<Relator> result;
 
@@ -129,6 +137,7 @@ spin(const std::vector<Relator> &relators,
         total_length += relator.size();
     }
     const size_t n = relators.size();
+    // Average length
     const size_t avg = (total_length + n - 1) / n;
     const size_t max_len = std::max<size_t>(avg, max_degree);
 
@@ -140,6 +149,9 @@ spin(const std::vector<Relator> &relators,
         }
     }
 
+    // Remove duplicates from the result.
+    // E.g. a periodic relator such as abab will have
+    // several identical cyclic shifts.
     std::sort(result.begin(), result.end());
     auto l = std::unique(result.begin(), result.end());
     result.erase(l, result.end());
