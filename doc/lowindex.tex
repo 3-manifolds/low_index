@@ -346,9 +346,60 @@ with respect to some choice of base point.
    the vertex is not minimal among the complexities of all vertices of the
    covering subgraph.
    
-\section{Description of the Algorithm}
-   \subsection{Permutation Representations}
+   \section{Description of the Algorithm}
+
+   We are now ready to describe the algorithm.  The input to the algorithm
+   consists of a triple $(\Pi, C, N)$ where
+   \begin{itemize}
+   \item $\Pi$ is a finite group presentation with $r$ generators for a group $G$;
+   \item $C$ is a covering subgraph of the CW complex $B$, where $B$ has
+     one vertex $v$ and $r$ directed, labeled edges;
+   \item $N$ is a positive integer.
+   \end{itemize}
+     
+   The output could be described as a list of all covering spaces
+   $(\tilde B, \tilde v)$ of $(B,v)$ such that
+   \begin{itemize}
+     \item $\tilde v$ is the canonical vertex of $\tilde B$;
+     \item the intial covering subgraph $C$ can be obtained by removing edges
+       of $\tilde B$; and
+     \item the degree of the covering map $p: (\tilde B, \tilde v)\to B$ is at
+       most $N$.
+     \end{itemize}
+
+     If the input covering subgraph $C$ is equal to $B$ itself then, as we
+     have seen, each conjugacy class of subgroups of $G$ with index at most $N$
+     contains a unique representative which is a group of the form
+     $p_*\pi_1(\tilde B, \tilde v) < G =\pi_1(B)$ for some $\tilde B$ in this
+     list.
+
+    As a practical matter, each covering $\tilde B$ of degree $d$ in the output
+    list comes with a labeling of its vertices by integers $1, \ldots, d$ such
+    that the canonical vertex $\tilde v$ has label $1$.  As such it is straightforward to
+    generate a representation of $G$ into the group of permutations of the set
+    $\{1, \ldots, d\}$ such that the subpgroup $p_*\pi_1(\tilde B, \tilde v$ is
+    the stabilizer of $1$.  (This representation is given by the standard right action
+    on the vertices of the cover.)  A permutation representations of this sort is
+    easy to describe combinatorially and is the expected form of input by many
+    group theory software packages.  It also can be used to complete reconstruct
+    the covering space.  So, in practice, our implementation actually outputs a
+    list of permutation representations.  We will provide more details below.
+    
+    There is a natural way to organize the computation in terms of a directed
+    tree, described below, which we call the Sims Tree.  The nodes of the Sims
+    tree are covering subgraphs of $B$ and the root of the tree is $B$, viewed
+    as a degree $1$ covering of itself.  If the covering graph in the input to
+    the algorithm is a node of the Sims tree then the algorithm computes the
+    list of all terminal nodes of the subtree of descendents of that node which
+    satisfy the extra conditions that the base vertex is canonical and the
+    relators all lift to all vertices.  If two nodes are incomparable in the
+    tree then they have disjoint subtrees of descendents, so the computation of
+    those two subtrees can be done in parallel.  The implementation takes
+    advantage of this fact to speed up the executation.
+    
    \subsection{The Sims Tree}
+
+   \subsection{Permutation Representations}
 
 \section{Performance}
 
