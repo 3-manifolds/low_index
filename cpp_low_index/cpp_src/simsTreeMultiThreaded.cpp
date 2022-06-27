@@ -11,9 +11,9 @@ SimsTreeMultiThreaded::SimsTreeMultiThreaded(
     const DegreeType max_degree,
     const std::vector<Relator> &short_relators,
     const std::vector<Relator> &long_relators,
-    const unsigned int thread_num)
+    const unsigned int num_threads)
   : SimsTreeBase(rank, max_degree, short_relators, long_relators)
-  , _thread_num(thread_num)
+  , _num_threads(num_threads)
   , _nodes(nullptr)
   , _node_index(0)
   , _recursion_stop_requested(false)
@@ -137,8 +137,8 @@ SimsTreeMultiThreaded::_list()
     _nodes = &root_nodes;
     
     std::vector<std::thread> threads;
-    threads.reserve(_thread_num);
-    for (unsigned int i = 0; i < _thread_num; i++) {
+    threads.reserve(_num_threads);
+    for (unsigned int i = 0; i < _num_threads; i++) {
         threads.emplace_back(&SimsTreeMultiThreaded::_thread_worker, this);
     }
 

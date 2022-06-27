@@ -20,7 +20,7 @@ permutation_reps(
     const std::vector<Relator> &long_relators,
     const DegreeType max_degree,
     const std::string &strategy,
-    const unsigned int thread_num)
+    const unsigned int num_threads)
 {
     const std::vector<Relator> all_short_relators =
         (strategy == spin_short_strategy)
@@ -31,16 +31,16 @@ permutation_reps(
 
     std::unique_ptr<SimsTreeBase> t;
 
-    const unsigned int resolved_thread_num =
-        (thread_num > 0)
-            ? thread_num
+    const unsigned int resolved_num_threads =
+        (num_threads > 0)
+            ? num_threads
             : std::thread::hardware_concurrency();
 
-    if (resolved_thread_num > 1) {
+    if (resolved_num_threads > 1) {
         t.reset(
             new SimsTreeMultiThreaded(
                 rank, max_degree, all_short_relators, long_relators,
-                resolved_thread_num));
+                resolved_num_threads));
     } else {
         t.reset(
             new SimsTree(
@@ -75,7 +75,7 @@ permutation_reps(
     const std::vector<std::string> &long_relators,
     const DegreeType max_degree,
     const std::string &strategy,
-    const unsigned int thread_num)
+    const unsigned int num_threads)
 {
     return permutation_reps(
         rank,
@@ -83,7 +83,7 @@ permutation_reps(
         parse_words(rank, long_relators),
         max_degree,
         strategy,
-        thread_num);
+        num_threads);
 }
 
 }

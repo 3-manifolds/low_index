@@ -105,7 +105,7 @@ def run_example_low_level(ex):
             max_degree = ex['index'],
             short_relators = short_relators,
             long_relators = long_relators,
-            thread_num = cpp_low_index._low_index.hardware_concurrency())
+            num_threads = cpp_low_index._low_index.hardware_concurrency())
     else:
         tree = cpp_low_index._low_index.SimsTree(
             rank = ex['rank'],

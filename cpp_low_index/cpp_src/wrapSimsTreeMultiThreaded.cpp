@@ -20,7 +20,7 @@ void addSimsTreeMultiThreaded(pybind11::module_ &m) {
              pybind11::arg("max_degree"),
              pybind11::arg("short_relators"),
              pybind11::arg("long_relators"),
-             pybind11::arg("thread_num"),
+             pybind11::arg("num_threads"),
              DOC(low_index, SimsTreeMultiThreaded, SimsTreeMultiThreaded));
 }
 

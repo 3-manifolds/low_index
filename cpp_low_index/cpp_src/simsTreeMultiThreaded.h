@@ -32,7 +32,7 @@ public:
         DegreeType max_degree,
         const std::vector<Relator> &short_relators,
         const std::vector<Relator> &long_relators,
-        unsigned int thread_num);
+        unsigned int num_threads);
 
     /// Find all complete covering subgraphs for which all relators lift.
     /// The parameters do not affect the result, but do affect the performance.
@@ -65,7 +65,7 @@ private:
         const std::vector<_Node> &nodes,
         std::vector<SimsNode> * result);
 
-    const unsigned int _thread_num;
+    const unsigned int _num_threads;
 
     std::vector<_Node> *_nodes;
     size_t _node_index;

@@ -6,18 +6,21 @@
 #include <utility>
 #include <string>
 
-/// low_index is a module to compute low-index subgroups.
 namespace low_index {
 
+/// Value for the strategy argument of permutation_reps.
+///
 /// Generate more relator words by cyclically permuting the
 /// given short relator words.
 extern const std::string spin_short_strategy;
 
-/// Given a finitely presented group of with rank generators
-/// and relators short_relators and long_relators return a permutation
-/// representation for each subgroup of index up to max_degree.
+/// Given a finitely presented group, return a permutation representation
+/// for each subgroup of index up to max_degree.
 ///
-/// thread_num = 0 means that the number of cores will be used
+/// The finitely presented group has rank generators and relators
+/// short_relators and long_relators.
+///
+/// num_threads = 0 means that the number of cores will be used
 /// as number of threads.
 std::vector<std::vector<std::vector<DegreeType>>>
 permutation_reps(
@@ -26,7 +29,7 @@ permutation_reps(
     const std::vector<Relator> &long_relators,
     DegreeType max_degree,
     const std::string &strategy = spin_short_strategy,
-    unsigned int thread_num = 0);
+    unsigned int num_threads = 0);
 
 /// An overload of permutation_reps that takes the relators as
 /// SnapPy-style words.
@@ -37,7 +40,7 @@ permutation_reps(
     const std::vector<std::string> &long_relators,
     DegreeType max_degree,
     const std::string &strategy = spin_short_strategy,
-    unsigned int thread_num = 0);
+    unsigned int num_threads = 0);
 
 }
 

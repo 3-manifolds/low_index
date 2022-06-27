@@ -19,7 +19,7 @@ void addLowIndex(pybind11::module_ &m) {
             const std::vector<Relator> &,
             DegreeType,
             const std::string &,
-            unsigned int thread_num);
+            unsigned int num_threads);
 
         m.def("permutation_reps",
               Signature(&permutation_reps),
@@ -28,7 +28,7 @@ void addLowIndex(pybind11::module_ &m) {
               pybind11::arg("long_relators"),
               pybind11::arg("max_degree"),
               pybind11::arg("strategy") = spin_short_strategy,
-              pybind11::arg("thread_num") = 0,
+              pybind11::arg("num_threads") = 0,
               DOC(low_index, permutation_reps));
     }
 
@@ -39,7 +39,7 @@ void addLowIndex(pybind11::module_ &m) {
             const std::vector<std::string> &,
             DegreeType,
             const std::string &,
-            unsigned int thread_num);
+            unsigned int num_threads);
 
         m.def("permutation_reps",
               Signature(&permutation_reps),
@@ -48,7 +48,7 @@ void addLowIndex(pybind11::module_ &m) {
               pybind11::arg("long_relators"),
               pybind11::arg("max_degree"),
               pybind11::arg("strategy") = spin_short_strategy,
-              pybind11::arg("thread_num") = 0,
+              pybind11::arg("num_threads") = 0,
               DOC(low_index, permutation_reps_2));
     }
 }
