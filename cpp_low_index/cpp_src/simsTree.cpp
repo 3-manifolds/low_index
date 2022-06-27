@@ -10,15 +10,6 @@ SimsTree::SimsTree(
     const std::vector<Relator> &long_relators)
   : SimsTreeBase(rank, max_degree, short_relators, long_relators)
 {
-    for (const Relator &relator : short_relators) {
-        if (!(relator.size() < std::numeric_limits<RelatorLengthType>::max())) {
-            throw std::domain_error(
-                "Length of a relator can be at most " +
-                std::to_string(
-                    static_cast<int>(
-                        std::numeric_limits<RelatorLengthType>::max())));
-        }
-    }
 }
 
 std::vector<SimsNode>

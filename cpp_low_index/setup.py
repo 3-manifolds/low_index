@@ -12,6 +12,7 @@ sources = [
     "cpp_src/simsNode.cpp",
     "cpp_src/stackedSimsNode.cpp",
     "cpp_src/abstractSimsNode.cpp",
+    "cpp_src/simsTreeBase.cpp",
     "cpp_src/simsTree.cpp",
     "cpp_src/simsTreeMultiThreaded.cpp",
     # The pybind11 headers are somewhat heavy - compiling all pieces

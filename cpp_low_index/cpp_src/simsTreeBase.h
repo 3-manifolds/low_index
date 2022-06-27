@@ -10,22 +10,18 @@ class SimsTreeBase
 {
 public:
     /// List all subgroups.
-    std::vector<SimsNode> list() { return _list(); }
+    std::vector<SimsNode> list();
 
-    virtual ~SimsTreeBase() = default;
+    virtual ~SimsTreeBase();
     
 protected:
     SimsTreeBase(
         RankType rank,
         DegreeType max_degree,
         const std::vector<Relator> &short_relators,
-        const std::vector<Relator> &long_relators)
-      : _root(rank, max_degree, short_relators.size())
-      , _short_relators(short_relators)
-      , _long_relators(long_relators)
-    {
-    }
+        const std::vector<Relator> &long_relators);
 
+    // Implements list()
     virtual std::vector<SimsNode> _list() = 0;
    
     const SimsNode _root;
