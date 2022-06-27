@@ -119,7 +119,7 @@ public:
 
     /// Give the representation into the symmetric group S_degree.
     /// That is, for each letter, give the corresponding permutation
-    /// on the numbers 1, ..., degree().
+    /// on the numbers 0, ..., degree() - 1.
     std::vector<std::vector<DegreeType>> permutation_rep() const;
 
     /// String representation - particularly useful for debugging.

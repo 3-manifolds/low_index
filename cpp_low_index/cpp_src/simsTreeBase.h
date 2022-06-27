@@ -5,9 +5,11 @@
 
 namespace low_index {
 
+/// Recurse to find all low-index subgroups.
 class SimsTreeBase
 {
 public:
+    /// List all subgroups.
     std::vector<SimsNode> list() { return _list(); }
 
     virtual ~SimsTreeBase() = default;

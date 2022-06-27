@@ -1,4 +1,5 @@
 #include "simsTreeMultiThreaded.h"
+#include "docSimsTreeMultiThreaded.h"
 
 #include "pybind11/pybind11.h"
 
@@ -8,7 +9,8 @@ namespace low_index {
 
 void addSimsTreeMultiThreaded(pybind11::module_ &m) {
     pybind11::class_<SimsTreeMultiThreaded, SimsTreeBase>(
-            m, "SimsTreeMultiThreaded")
+            m, "SimsTreeMultiThreaded",
+            DOC(low_index, SimsTreeMultiThreaded))
         .def(pybind11::init<RankType,
                             DegreeType,
                             const std::vector<Relator> &,
@@ -18,7 +20,8 @@ void addSimsTreeMultiThreaded(pybind11::module_ &m) {
              pybind11::arg("max_degree"),
              pybind11::arg("short_relators"),
              pybind11::arg("long_relators"),
-             pybind11::arg("thread_num"));
+             pybind11::arg("thread_num"),
+             DOC(low_index, SimsTreeMultiThreaded, SimsTreeMultiThreaded));
 }
 
 }

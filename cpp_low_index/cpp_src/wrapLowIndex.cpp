@@ -1,5 +1,7 @@
 #include "lowIndex.h"
 
+#include "docLowIndex.h"
+
 #include "pybind11/pybind11.h"
 
 #include "pybind11/stl.h"
@@ -26,7 +28,8 @@ void addLowIndex(pybind11::module_ &m) {
               pybind11::arg("long_relators"),
               pybind11::arg("max_degree"),
               pybind11::arg("strategy") = spin_short_strategy,
-              pybind11::arg("thread_num") = 0);
+              pybind11::arg("thread_num") = 0,
+              DOC(low_index, permutation_reps));
     }
 
     {
@@ -45,7 +48,8 @@ void addLowIndex(pybind11::module_ &m) {
               pybind11::arg("long_relators"),
               pybind11::arg("max_degree"),
               pybind11::arg("strategy") = spin_short_strategy,
-              pybind11::arg("thread_num") = 0);
+              pybind11::arg("thread_num") = 0,
+              DOC(low_index, permutation_reps_2));
     }
 }
 
