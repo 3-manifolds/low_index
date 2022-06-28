@@ -14,3 +14,12 @@ def cpu_info():
                 if parts[0].strip() == 'model name':
                     return parts[1].strip()
     return 'Unknown CPU'
+
+def gap_relator(word):
+    gap_syllables = []
+    for letter in word:
+        if letter.isupper():
+            gap_syllables.append('%s^-1'%letter.lower())
+        else:
+            gap_syllables.append(letter)
+    return '*'.join(gap_syllables)

@@ -1,6 +1,8 @@
 import os
 import sys
 import time
+import subprocess
+from tempfile import NamedTemporaryFile
 import cpp_low_index
 from cpp_low_index import permutation_reps
 from cpp_low_index import benchmark_util
@@ -64,6 +66,7 @@ examples = [
         'long relators': [],
         'index': 25,
         'num_long': 0,
+        'gap skip': True,
     },
     {
         'group' : 'Symmetric Group S7',
@@ -127,12 +130,46 @@ def run(ex):
     print('%.3fs'%elapsed)
     sys.stdout.flush()
 
+def translate_to_gap(ex, output):
+    output.write('info := "%s; index=%d";\n'%(ex['group'], ex['index']))
+    all_relators = ex['short relators'] + ex['long relators']
+    gap_relators = [benchmark_util.gap_relator(r) for r in all_relators]
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    generators = letters[:ex['rank']]
+    output.write('F := FreeGroup(')
+    output.write(', '.join(['"%s"'%g for g in generators]))
+    output.write(');\n')
+    for n, gen in enumerate(generators):
+        output.write('%s := F.%d;\n'%(gen, n + 1))
+    output.write('G := F / [\n')
+    for relator in gap_relators:
+        output.write('%s,\n'%relator)
+    output.write('];\n')
+    output.write("""
+PrintFormatted("{}\\n", info);
+start := NanosecondsSinceEpoch();
+ans := Length(LowIndexSubgroupsFpGroup(G,%d));
+elapsed := Round(Float(NanosecondsSinceEpoch() - start) / 10000000.0)/100;
+PrintFormatted("{} subgroups\\n", ans);
+PrintFormatted("{} secs\\n", ViewString(elapsed));
+"""%ex['index'])
+
 if __name__ == '__main__':
     print(benchmark_util.cpu_info(),
           'with',
           os.cpu_count(),
           'cores (reported by python)/',
           cpp_low_index._low_index.hardware_concurrency(),
-          'cores (reported by C++)')
-    for example in examples:
-        run(example)
+          'cores (reported by C++)', file=sys.stderr)
+    if '-gap' in sys.argv:
+        with open('/tmp/benchmark.gap', 'w') as gap_script:
+            for example in examples:
+                if 'gap skip' not in example:
+                    translate_to_gap(example, gap_script)
+            gap_script.write("QUIT;\n")
+        subprocess.run(['sage', '-gap', '/tmp/benchmark.gap'])
+        os.unlink('/tmp/benchmark.gap')
+    else:
+        for example in examples:
+            run(example)
+
