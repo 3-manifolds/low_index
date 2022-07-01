@@ -98,7 +98,9 @@ AbstractSimsNode::_copy_memory(const AbstractSimsNode &other)
 }
 
 bool
-AbstractSimsNode::relators_may_lift(const std::vector<Relator> &relators)
+AbstractSimsNode::relators_may_lift(const std::vector<Relator> &relators,
+				    const std::pair<LetterType, DegreeType> slot,
+				    const DegreeType target)
 {
     for (size_t n = 0; n < relators.size(); n++) {
         for (DegreeType v = 0; v < degree(); v++) {
@@ -155,32 +157,35 @@ AbstractSimsNode::_relator_may_lift(
     // We are at the last letter in the relator.
 
     if (next_vertex == v + 1) {
-        // We were able to lift the entire relator and arrived back
-        // at the vetex we started - mark vertex and relator as
-        // checked.
+        // We were able to lift the relator to a loop.  Record this fact and
+        // return true.
         _lift_vertices[j] = finished;
         return true;
     }
 
     if (next_vertex == 0) {
-        // There is no edge yet from the current vertex labeled by the
-        // last letter. We know that this edge has to end at the
-        // original vertex v + 1 for the relator to lift, so try to add
-        // that edge.
+        // The relator almost lifted completely, but the last edge that should
+        // appear in the lift was missing from the graph.  The only way that the
+        // relator could lift to a loop would be if the missing edge joined
+        // the last vertex of the lift to the initial vertex v+1. We attempt
+        // to add an edge using the empty slot at the end of the lift and the
+        // appropriate slot at the initial vertex v + 1.
         //
-        // Note that next_vertex == 0 implies that there is no
-        // edge labeled by the last letter starting from the current vertex.
-        // However, there might be already an edge with this letter ending
-        // at vertex v + 1. That would be a problem, so call verified
-        // edge.
+        // Note that it is only possible to add such an edge if both of those
+        // slots are empty.  We know that the slot at the end of the lift is
+        // empty, but the slot at the initial vertex might have already been
+        // filled by an edge that was added earlier.  So we must call
+        // verified_add_edge here to avoid corrupting the structure of the
+        // CoveringSubgraph.
         if (verified_add_edge(relator.back(), vertex, v + 1)) {
-            // Mark vertex and relator as checked.
+            // Record that the relator lifts to a loop and return true.
             _lift_vertices[j] = finished;
             return true;
         }
     }
 
-    // All other cases mean the relator does not lift.
+    // In all other cases return false to signal that the relator does not lift
+    // to a loop.
     return false;
 }
 

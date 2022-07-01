@@ -78,13 +78,14 @@ examples = [
     },
 ]
 
-def run_example(ex):
+def run_example(ex, num_threads=0):
     return len(
         permutation_reps(
             rank = ex['rank'],
             short_relators = ex['short relators'],
             long_relators = ex['long relators'],
-            max_degree = ex['index']))
+            max_degree = ex['index'],
+            num_threads = num_threads))
 
 def run_example_low_level(ex):
     short_relators = cpp_low_index._low_index.spin(
@@ -109,16 +110,15 @@ def run_example_low_level(ex):
             max_degree = ex['index'],
             short_relators = short_relators,
             long_relators = long_relators)
-        
     return len(tree.list())
 
-def run(ex):
+def run(ex, num_threads = 0):
     print('%s; index = %d.'%(ex['group'], ex['index']))
     start = time.time()
     if use_low_level:
         n = run_example_low_level(ex)
     else:
-        n = run_example(ex)
+        n = run_example(ex, num_threads = num_threads)
     elapsed = time.time() - start
     print('%d subgroups' % n)
     print('%.3fs'%elapsed)
@@ -189,6 +189,10 @@ if __name__ == '__main__':
             magma_script.write("\nquit;\n")
         subprocess.run(['magma', '/tmp/benchmark.magma'])
         os.unlink('/tmp/benchmark.magma')
+    elif '-single' in sys.argv:
+        print('Running single-threaded')
+        for example in examples:
+            run(example, num_threads = 1)
     else:
         for example in examples:
             run(example)

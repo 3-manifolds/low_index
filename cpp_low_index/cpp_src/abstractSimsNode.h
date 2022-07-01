@@ -51,7 +51,10 @@ public:
     /// If the subgraph is complete, the answer is definite. That
     /// is, if the subgraph is complete then the answer is true
     /// if and only if the given relators lift.
-    bool relators_may_lift(const std::vector<Relator> &relators);
+    // bool relators_may_lift(const std::vector<Relator> &relators);
+    bool relators_may_lift(const std::vector<Relator> &relators,
+			   const std::pair<LetterType, DegreeType> slot,
+			   const DegreeType target);
 
     /// We regard two complete covering subgraphs that differ only
     /// by reindexing of the vertices as equivalent. We want to only
