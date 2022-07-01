@@ -17,7 +17,6 @@ examples = [
         'short relators': ["aaBcbbcAc"],
         'long relators': ["aacAbCBBaCAAbbcBc"],
         'index': 7,
-        'num_long': 1,
     },
     {
         'group' : 'Fundamental group of K11n34',
@@ -25,7 +24,6 @@ examples = [
         'short relators': ["aaBcbbcAc"],
         'long relators':  ["aacAbCBBaCAAbbcBc"],
         'index': 8,
-        'num_long': 1,
     },
     {
         'group' : 'Fundamental group of K15n12345',
@@ -33,7 +31,6 @@ examples = [
         'short relators': ["aBcACAcb"],
         'long relators': ["aBaCacBAcAbaBabaCAcAbaBaCacBAcAbaBabCAcAbABaCabABAbABaCabCAcAb"],
         'index': 7,
-        'num_long': 1,
     },
     {
         'group' : 'Fundamental group of K15n12345',
@@ -41,7 +38,6 @@ examples = [
         'short relators': ["aBcACAcb"],
         'long relators':["aBaCacBAcAbaBabaCAcAbaBaCacBAcAbaBabCAcAbABaCabABAbABaCabCAcAb"],
         'index': 8,
-        'num_long': 1,
     },
     {
         'group' : 'Fundamental group of o9_15405',
@@ -49,7 +45,6 @@ examples = [
         'short relators': ["aaaaabbbaabbbaaaaabbbaabbbaaaaaBBBBBBBB"],
         'long relators': [],
         'index': 9,
-        'num_long': 0,
     },
     {
         'group' : 'Fundamental group of o9_15405',
@@ -57,17 +52,6 @@ examples = [
         'short relators': [],
         'long relators': ["aaaaabbbaabbbaaaaabbbaabbbaaaaaBBBBBBBB"],
         'index': 9,
-        'num_long': 1,
-    },
-    {
-        'group' : 'Modular Group',
-        'rank': 2,
-        'short relators': ["aa", "bbb"],
-        'long relators': [],
-        'index': 25,
-        'num_long': 0,
-        'gap skip': True,
-        'magma skip': True,
     },
     {
         'group' : 'Symmetric Group S7',
@@ -80,9 +64,18 @@ examples = [
             "AAbaabAAbaab",
             "AAAbaaabAAAbaaab"],
         'long relators': [],
-        'index': 35,
-        'num_long': 0,
-    }
+        'index': 34,
+    },
+    # This example must go at the end to avoid an infinite loop when
+    # using Magma for the benchmark.
+    {
+        'group' : 'Modular Group',
+        'rank': 2,
+        'short relators': ["aa", "bbb"],
+        'long relators': [],
+        'index': 25,
+        'gap skip': True,
+    },
 ]
 
 def run_example(ex):
