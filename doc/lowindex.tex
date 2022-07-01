@@ -4,6 +4,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amsrefs}
+\usepackage{float}
 
 \parindent 0pt 
 \parskip 1ex
@@ -386,22 +387,41 @@ with respect to some choice of base point.
     list of permutation representations.  We will provide more details below.
     
     There is a natural way to organize the computation in terms of a directed
-    tree, described below, which we call the Sims Tree.  The nodes of the Sims
-    tree are covering subgraphs of $B$ and the root of the tree is $B$, viewed
-    as a degree $1$ covering of itself.  If the covering graph in the input to
-    the algorithm is a node of the Sims tree then the algorithm computes the
-    list of all terminal nodes of the subtree of descendents of that node which
-    satisfy the extra conditions that the base vertex is canonical and the
-    relators all lift to all vertices.  If two nodes are incomparable in the
-    tree then they have disjoint subtrees of descendents, so the computation of
-    those two subtrees can be done in parallel.  The implementation takes
-    advantage of this fact to speed up the executation.
+    rooted tree, described below, which we call the Sims Tree.  The nodes of the
+    Sims tree are covering subgraphs of $B$ and the root of the tree is $B$,
+    viewed as a degree $1$ covering of itself.  If the covering graph in the
+    input to the algorithm is a node of the Sims tree then the algorithm
+    computes the list of all terminal nodes of the subtree of descendents of
+    that node which satisfy the extra conditions that the base vertex is
+    canonical and the relators all lift to all vertices.  If two nodes are
+    incomparable in the tree then they have disjoint subtrees of descendents, so
+    the computation of those two subtrees can be done in parallel.  The
+    implementation takes advantage of this fact to speed up the executation.
     
    \subsection{The Sims Tree}
 
    \subsection{Permutation Representations}
 
 \section{Performance}
+  In this section we compare running times for our low\_index implementation
+  of Sims'  algorithm against other implementations on a variety of computer
+  systems.  Note that the number of cores listed for Intel CPUs which support
+  hyperthreading is twice the number of physical cores.
+
+  \begin{table}[H]
+    \caption{Intel\textsuperscript\textregistered Core\texttrademark i5-8210Y @ 1.60GHz with 4 cores}
+    \centering
+    \begin{tabular}{lcrrr}
+      \\[6pt]
+      Example & index & low\_index & GAP & Magma \\[6pt]
+      \hline
+      \\
+      K11n34       & 7 &  0.96s   & 5.09 s    & ?? \\
+      K11n34       & 8 &  17.43s & 104.08s & ??\\
+      K15n12345 & 7 &  0.74s   & 7.71s     & ??\\
+      K15n12345 & 8 &  11.75s & 117.59s & ??\\
+    \end{tabular}
+  \end{table}
 
 \begin{bibdiv}
 \begin{biblist}

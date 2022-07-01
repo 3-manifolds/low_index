@@ -67,6 +67,7 @@ examples = [
         'index': 25,
         'num_long': 0,
         'gap skip': True,
+        'magma skip': True,
     },
     {
         'group' : 'Symmetric Group S7',
@@ -133,7 +134,7 @@ def run(ex):
 def translate_to_gap(ex, output):
     output.write('info := "%s; index=%d";\n'%(ex['group'], ex['index']))
     all_relators = ex['short relators'] + ex['long relators']
-    gap_relators = [benchmark_util.gap_relator(r) for r in all_relators]
+    gap_relators = [benchmark_util.expand_relator(r) for r in all_relators]
     letters = 'abcdefghijklmnopqrstuvwxyz'
     generators = letters[:ex['rank']]
     output.write('F := FreeGroup(')
@@ -154,6 +155,24 @@ PrintFormatted("{} subgroups\\n", ans);
 PrintFormatted("{} secs\\n", ViewString(elapsed));
 """%ex['index'])
 
+def translate_to_magma(ex, output):
+    output.write('"%s; index = %d";\n'%(ex['group'], ex['index']))
+    all_relators = ex['short relators'] + ex['long relators']
+    relators = [benchmark_util.expand_relator(r) for r in all_relators]
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    generators = letters[:ex['rank']]
+    output.write('G := Group<\n')
+    output.write(', '.join(['%s'%g for g in generators]))
+    output.write(' | ')
+    output.write(', '.join(['%s'%r for r in relators]))
+    output.write('>;\n')
+    output.write('T := Time();\n')
+    output.write('sgps := LowIndexSubgroups(G, <1, %d>);\n'%ex['index'])
+    output.write('T := Time(T);\n')
+    output.write('count := #sgps;\n')
+    output.write('printf "%o subgroups\\n", count;\n')
+    output.write('printf "%o secs\\n", T;\n')
+
 if __name__ == '__main__':
     print(benchmark_util.cpu_info(),
           'with',
@@ -169,6 +188,14 @@ if __name__ == '__main__':
             gap_script.write("QUIT;\n")
         subprocess.run(['sage', '-gap', '/tmp/benchmark.gap'])
         os.unlink('/tmp/benchmark.gap')
+    elif '-magma' in sys.argv:
+        with open('/tmp/benchmark.magma', 'w') as magma_script:
+            for example in examples:
+                if 'magma skip' not in example:
+                     translate_to_magma(example, magma_script)
+            magma_script.write("\nquit;\n")
+        subprocess.run(['magma', '/tmp/benchmark.magma'])
+        os.unlink('/tmp/benchmark.magma')
     else:
         for example in examples:
             run(example)
