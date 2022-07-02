@@ -54,6 +54,53 @@ examples = [
         'index': 9,
     },
     {
+        'group': 'K5_13(3,0)',
+        'rank': 2,
+        'short relators': ['bbb', 'abABaaBAbabABaaBAbabABAb'],
+        'long relators': [],
+        'index': 15
+    },
+    {
+        'group': 'K15n145097(0,1)',
+        'rank': 3,
+        'short relators': ['aBCBabaBAbcbAccAbC'],  # Fastest was just one short rel
+        'long relators': ['aBAbcbAcbAcAbAcAbAcAbCaBC',
+                          'aBCBabABaaaaaaaaaaaaaaaaBAbcbAccbAcbAcAC'],
+        'index': 7,
+    },
+    {
+        'group': 'DodecahedralOrientableClosedCensus[3]',
+        'rank': 4,
+        'short relators': ['abbDDabacdc',
+                           'acdAcDc',
+                           'aBacddBBcD',
+                           'acddCdCbAddB'],
+        'long relators': [],
+        'index': 6,
+    },
+    {
+        'group': 'DodecahedralOrientableClosedCensus[8]',
+        'rank': 4,
+        'short relators': ['adADAddAbdbdbadaDD',
+                           'adaDDbcccDAddAbdb',
+                           'adaDDbccACACdaDDadCCBdAbcBdAbcBD',
+                           'acacaDAddADcacaCCBdAbcBdAbcBdAbc'],
+        'long relators': [],  # It didn't seem to help to make some rels long.
+        'index': 5,
+    },
+    {
+        'group': 'L14a26995(2,0)(2,0)(2,0)',
+        'rank': 4,
+        'short relators': ['bb',
+                           'aa',
+                           'cdcd',
+                           'aCABacAddcDbABdCDDaCAbac',
+                           'aBdcDbABddcDbaBdCDbABacAb',
+                           'aCAbacACBDCbcaCAbacACBcdbcaCABacACBc'],
+        'long relators': [], # Making rels long *slowed things down*.
+        'index': 7,
+    },
+    {
         'group' : 'Symmetric Group S7',
         'rank' : 2,
         'short relators': [
@@ -64,7 +111,7 @@ examples = [
             "AAbaabAAbaab",
             "AAAbaaabAAAbaaab"],
         'long relators': [],
-        'index': 34,
+        'index': 35,
     },
     # This example must go at the end to avoid an infinite loop when
     # using Magma for the benchmark.
@@ -77,6 +124,7 @@ examples = [
         'gap skip': True,
     },
 ]
+
 
 def run_example(ex, num_threads=0):
     return len(
@@ -196,4 +244,3 @@ if __name__ == '__main__':
     else:
         for example in examples:
             run(example)
-
