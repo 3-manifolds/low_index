@@ -3,6 +3,7 @@
 #include <limits>
 #include <stdexcept>
 #include <cstring>
+#include <iostream>
 
 namespace low_index {
 
@@ -104,9 +105,16 @@ AbstractSimsNode::relators_may_lift(const std::vector<Relator> &relators,
 {
     for (size_t n = 0; n < relators.size(); n++) {
         for (DegreeType v = 0; v < degree(); v++) {
-            if (!_relator_may_lift(relators[n], n, v)) {
+	    DegreeType endVertex = _lift_vertices[n*max_degree() + v];
+	    /// If this is being called immediately after adding an edge then the
+	    /// lift state of a relator cannot have changed unless the lift of its
+	    /// longest liftable initial segment is an endpoint of the new edge.
+	    if (target != 0 && endVertex != slot.second && endVertex != target) {
+	        continue;
+	    }
+	    if (!_relator_may_lift(relators[n], n, v)) {
                 return false;
-            }
+	    }
         }
     }
     return true;
@@ -133,7 +141,7 @@ AbstractSimsNode::_relator_may_lift(
     // Continue lifting the relator where we left of.
     DegreeType next_vertex;
     for (RelatorLengthType i = _lift_indices[j]; true; i++) {
-        // Result of lifting the vertex by the next letter in
+        // Result of lifting the edge given by the next letter in
         // the relator.
         next_vertex = act_by(relator[i], vertex);
         if (i == relator.size() - 1) {
