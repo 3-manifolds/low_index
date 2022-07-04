@@ -5,22 +5,16 @@
 
 namespace low_index {
 
-/// A class to recursively add edges to a SimsNode to find all covering
-/// subgraphs up to a certain degree such that the given relators lift.
-///
-/// In other words, a class to find all low-index subgroup H of a finitely
-/// presented group G with rank generators and short_relators and long_relators
-/// as relations. The maximal index H in G is max_degree.
-///
-/// As explained in AbstractSimsNode, the short_relators are checked while
-/// recursively adding edges and the long_relators only once the covering
-/// subgraph is complete.
+/// A single-threaded implementation of SimsTreeBase.
+
+/// It simply recursively adds edges to a SimsNode (starting with the
+/// SimsNode with no edges) to find all covering graphs up to the given
+/// degree.
 ///
 class SimsTree : public SimsTreeBase
 {
 public:
-    /// Construct SimsTree with an empty root.
-    /// That is a SimsNode for the given rank and max_degree and no edges.
+    /// See SimsTreeBase for arguments.
     SimsTree(
         RankType rank,
         DegreeType max_degree,

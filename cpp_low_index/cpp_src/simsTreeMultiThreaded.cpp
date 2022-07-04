@@ -14,13 +14,15 @@ SimsTreeMultiThreaded::SimsTreeMultiThreaded(
     const unsigned int num_threads)
   : SimsTreeBase(rank, max_degree, short_relators, long_relators)
   , _num_threads(num_threads)
+  , _recursion_stop_requested(false)
   , _nodes(nullptr)
   , _node_index(0)
-  , _recursion_stop_requested(false)
   , _num_working_threads(0)
 {
 }
 
+// Recurse a SimsNode, similar to SimsTree::_recurse but writing the result
+// to _Node and checking _recursion_stop_requested to stop recursing.
 void
 SimsTreeMultiThreaded::_recurse(
     const StackedSimsNode &n,
@@ -54,12 +56,20 @@ SimsTreeMultiThreaded::_recurse(
         }
 
         if (!result->children.empty()) {
+            // This thread responded to the recursion stop requested
+            // earlier - all nodes that still need to be recursed
+            // are added to children.
             result->children.emplace_back(new_subgraph);
             continue;
         }
 
+        // No benefit of stopping recursion when we are at the complete
+        // leaves of the search tree.
         if (!n.is_complete()) {
+            // Check whether the stop recursion flag was set.
+            // Use exchange so that only one thread responds to it.
             if (_recursion_stop_requested.exchange(false)) {
+                // Record SimsNode as needing to be recursed.
                 result->children.emplace_back(new_subgraph);
                 continue;
             }
@@ -70,48 +80,89 @@ SimsTreeMultiThreaded::_recurse(
 }
 
 void
+SimsTreeMultiThreaded::_recurse(
+    _Node * const node)
+{
+    // Allocate all the memory needed to recurse the SimsNode.
+    SimsNodeStack stack(node->root);
+    _recurse(stack.get_node(), node);
+}
+
+void
 SimsTreeMultiThreaded::_thread_worker()
 {
     while(true) {
+        // All logic to determine whether the queue is empty,
+        // pull off the next node or keep track of the number of
+        // working threads is protected by the mutex.
         std::unique_lock<std::mutex> lk(_mutex);
 
         const size_t index = _node_index;
         const size_t n = _nodes->size();
 
         if (index < n) {
+            // There was work on the queue.
+
             _num_working_threads++;
+
+            // Pull off the next node from the queue.
             _node_index++;
             std::vector<_Node> &nodes = *_nodes;
 
+            // Release lock and recurse the node.
             lk.unlock();
             _Node &node = nodes[index];
-            {
-                SimsNodeStack stack(node.root);
-                _recurse(stack.get_node(), &node);
-            }
+            _recurse(&node);
             const bool has_children = !node.children.empty();
             lk.lock();
 
             if (has_children) {
+                // This thread stopped recursing and filled
+                // _Node::children instead.
+                //
+                // Swap the queue to _Node::children.
+                //
+                // Note that this is safe: the flag to request
+                // stop recursing was raised only once when the
+                // queue ran empty and at most one thread responds
+                // to it.
                 _nodes = &node.children;
                 _node_index = 0;
+
+                // Note that _num_working_threads is decreased after we have
+                // refilled the queue:
+                // decreasing _num_working_threads to 0 without a new queue
+                // could trigger the threads to terminate.
             }
 
             _num_working_threads--;
 
             if (has_children || _num_working_threads == 0) {
+                // Wake up threads because there is new work
+                // or there are no more threads recursing and the threads need
+                // to terminate.
                 _wake_up_threads.notify_all();
             }
         } else {
             if (_num_working_threads == 0) {
+                // No _Node's left in the queue and no thread is recursing.
+                // Terminate.
                 break;
             }
 
             if (index == n) {
+                // The last node was just pulled off the queue, raise the
+                // flag to stop recursing to refill the queue (no thread
+                // might respond because they are all close to finishing,
+                // but that is fine).
+                // Increase _node_index to raise the
+                // flag only once until the queue has been refilled.
                 _node_index++;
                 _recursion_stop_requested = true;
             }
 
+            // Sleep until either the work queue has been refilled or
+            // _num_working_threads changed.
             _wake_up_threads.wait(lk);
         }
     }
@@ -133,19 +184,25 @@ SimsTreeMultiThreaded::_merge_vectors(
 std::vector<SimsNode>
 SimsTreeMultiThreaded::_list()
 {
+    // The root _Node containing a SimsNode without any edges.
     std::vector<_Node> root_nodes{_Node(_root)};
+    // Fill the queue.
     _nodes = &root_nodes;
-    
+
+    // Start the threads
     std::vector<std::thread> threads;
     threads.reserve(_num_threads);
     for (unsigned int i = 0; i < _num_threads; i++) {
         threads.emplace_back(&SimsTreeMultiThreaded::_thread_worker, this);
     }
 
+    // Wait for all threads to finish.
     for (std::thread &t : threads) {
         t.join();
     }
 
+    // Traverse the _Node tree to find all complete covering
+    // graphs.
     std::vector<SimsNode> result;
     _merge_vectors(root_nodes, &result);
     return result;

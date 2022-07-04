@@ -6,14 +6,25 @@
 namespace low_index {
 
 ///
-/// A covering subgraph with additional methods to check whether
-/// the given relators lift and whether the covering subgraph is
-/// minimal in the conjugation class with respect to a certain
-/// ordering.
+/// A class to list covering subgraphs up to conjugacy for a finitely
+/// presented group G.
 ///
-/// We say that a relator lifts to a covering subgraph if starting
-/// with any vertex and traversing the edges in the order such that
-/// their labels spell out the relator word.
+/// This class provides methods to check whether the covering subgraph
+/// is minimal in its conjugation class (see may_be_minimal for the
+/// ordering used) and whether the relators in G lift, that is whether
+/// the given words act trivially on the covering subgraph and the action
+/// of the free group F on the graph factors through G.
+///
+/// We can think of a covering subgraph passing the minimality and relators
+/// lift checks as:
+/// 1. The canonical representative of a conjugacy class of representations
+///    G -> S_degree. We obtain the canonical subgroup H for a conjugacy
+///    class of subgroups as preimage of all permutations fixing vertex 1.
+/// 2. A coset table for subgroup H of G.
+/// 3. Think of G as the fundamental group of a Cayley complex, that is
+///    take the Cayley complex for the free group F and add a 2-cell for
+///    each relator of G. A complete covering graph is a covering space
+///    of the Cayley complex.
 ///
 /// Note that we have two methods to check whether a set of relators
 /// lifts. The method relators_may_lift makes use of an acceleration

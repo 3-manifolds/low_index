@@ -1,7 +1,5 @@
-from . import _low_index
+from . import _low_index as implementation
 from ._low_index import permutation_reps
-
-__all__ = ['permutation_reps']
 
 __version__ = '1.2'
 

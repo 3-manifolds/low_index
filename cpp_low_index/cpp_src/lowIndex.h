@@ -19,7 +19,7 @@ namespace low_index {
 extern const std::string spin_short_strategy;
 
 /// Given a finitely presented group G, return a permutation representation
-/// for each subgroup of index up to max_degree.
+/// for each conjugacy class of subgroups of index up to max_degree.
 ///
 /// The number of generators of G is given by rank and the relators by
 /// short_relators and long_relators. Each relator is a list of non-zero

@@ -23,36 +23,32 @@ namespace low_index {
 /// - Directed edges labeled by letters 1, 2, ..., rank().
 ///   Note that there can be at most one directed edge with the
 ///   same label and same starting vertex or same ending vertex,
-///   respectively. If a directed edge labeled by the letter l is
-///   flipped, we label it by the inverse letter -l.
+///   respectively.
 ///
 /// We call such a graph complete, if there a directed edge for
 /// each vertex 1, 2, ..., degree() and each letter 1, 2, ..., rank().
 ///
-/// Let G be a finitely presented group. It might help to think of G
-/// as a Cayley complex with 1 vertex, one edge for each generator and
-/// one cell for each relator of G. Or think of each generator as a
-/// face-pairing of a fundamental polyhedron with the relators coming
-/// from edge and other relations.
+/// Let F be the free group with rank() generators. F is acting on the
+/// vertices of a complete covering graph as follows: a letter l acts
+/// by taking a vertex v to the end point of the edge labeled by l and
+/// starting at v. The inverse letter -l acts by traversing the edge
+/// labeled l ending at the v in reverse.
 ///
-/// Thinking of the letters as generators the G, consider a complete
-/// graph such that for each vertex and relator we end up at the same
-/// vertex when traversing the (labeled) edges in the order given by
-/// the relator.
-///
-/// Such a complete graph can be interpreted in the following ways:
-/// 1. A coset table for a subgroup H of G. Each vertex corresponds
-///    to a coset in G/H. To multiply a coset by a letter l, look at the
+/// Thus, we can think of a complete covering graph in the following
+/// ways:
+/// 1. A representation F -> S_degree into the symmetric group.
+///    The image of a letter l is the permutation obtained by letting
+///    all edges labeled l take the vertices to the vertices.
+///    Looking at the preimage of all permutations fixing one element
+///    gives a subgroup H of F. Fixing a different element gives a
+///    conjugate subgroup.
+/// 2. A coset table for a subgroup H of F. Each vertex corresponds
+///    to a coset in F/H. To multiply a coset by a letter l, look at the
 ///    end of an edge labeled by l and starting at the given coset.
-/// 2. A representation G -> S_degree. The image of a letter l is
-///    the permutation obtained by letting all edges labeled l take
-///    the vertices to the vertices.
-/// 3. A covering space of the Cayley complex with the graph as 1-skeleton.
-/// 4. A covering space of a 3-manifold. Take a copy of the fundamental
-///    polyhedron for each vertex. For each edge labeled l, lift the
-///    face-pairing so that it pairs a face of the copy corresponding
-///    to the start vertex to a face of the copy corresponding to the
-///    end vertex.
+/// 3. Think of F as the fundamental group of a Cayley complex, that
+///    is the cell complex with one vertex and a directed edge for
+///    each generator. A complete covering graph is a covering space of
+///    the Cayley complex.
 ///
 /// Internally, such a (not necessarily complete) graph is stored as two
 /// matrices of size degree() * rank() (we allocate memory for

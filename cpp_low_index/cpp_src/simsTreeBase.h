@@ -5,16 +5,31 @@
 
 namespace low_index {
 
-/// Recurse to find all low-index subgroups.
+/// A base class for algorithms to find all covering graphs of a given
+/// finitely presented group G up to a given degree.
+///
+/// The constructor of an implementation of this class will at least take
+/// the number of generators of G (rank), the max_degree and the relators of
+/// the group partitioned into short_relators and long_relators.
+///
+/// As explained for permutation_reps, short_relators are
+/// checked when recursing the incomplete covering subgraphs and long_relators
+/// are only checked at the end.
+///
 class SimsTreeBase
 {
 public:
-    /// List all subgroups.
+    /// Find all complete covering subgraphs for the given group G.
+    ///
+    /// Call this only once - some implementations store state so
+    /// the second call will give the wrong result.
+    ///
     std::vector<SimsNode> list();
 
     virtual ~SimsTreeBase();
     
 protected:
+    /// Create root SimsNode with no edges.
     SimsTreeBase(
         RankType rank,
         DegreeType max_degree,

@@ -15,6 +15,7 @@ SimsTree::SimsTree(
 std::vector<SimsNode>
 SimsTree::_list()
 {
+    // Allocate all memory needed to recurse up front.
     SimsNodeStack stack(_root);
     _recurse(stack.get_node());
     return std::move(_complete_nodes);
@@ -27,6 +28,10 @@ SimsTree::_recurse(const StackedSimsNode &n)
         if (!n.relators_lift(_long_relators)) {
             return;
         }
+        // Even though the graph is complete and thus relators_may_lift
+        // won't add edges itself, it is still marked as non-const.
+        // So make a copy - allocating memory on the heap, which we need
+        // to do anyway to add the result to _complete_nodes.
         SimsNode copy(n);
         if (!copy.relators_may_lift(_short_relators, {0,0}, 0)) {
             return;
@@ -35,9 +40,14 @@ SimsTree::_recurse(const StackedSimsNode &n)
         return;
     }
 
+    // Find vertex and letter so that no edge labeled by letter starts at the
+    // vertex.
     const std::pair<LetterType, DegreeType> slot = n.first_empty_slot();
     const DegreeType m = std::min<DegreeType>(n.degree() + 1, n.max_degree());
+    // Iterate through vertices where this edge could end.
     for (DegreeType v = 1; v <= m; v++) {
+        // If there is already an edge with the given label ending at v,
+        // we can add an edge to v.
         if (n.act_by(-slot.first, v) != 0) {
             continue;
         }
