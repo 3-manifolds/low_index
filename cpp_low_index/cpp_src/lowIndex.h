@@ -26,7 +26,7 @@ extern const std::string spin_short_strategy;
 /// integers with 1, ..., rank corresponding to the generators of G and
 /// -1, ..., -rank corresponding to the inverse generators.
 ///
-/// The result is a list of permutation representation (see CoveringGraph for
+/// The result is a list of permutation representation (see CoveringSubgraph for
 /// equivalence to a covering space of the Cayley complex or coset table).
 /// Each permutation representation consists of a list of permutations, one
 /// for each generator of G. Such a permutation sigma acts on
@@ -37,13 +37,13 @@ extern const std::string spin_short_strategy;
 /// Note that the function expects a partition of the relators into two.
 /// The result is independent of this partition but the performance of the
 /// algorithm very much depends on this choice. The underlying reason lies
-/// in the search tree of incomplete CoveringGraph's the algorithm has to
+/// in the search tree of incomplete CoveringSubgraph's the algorithm has to
 /// traverse. Only one set of relators (short_relators) is used to prune the
 /// the tree while the other set of relators (long_relators) is only checked
 /// when the algorithm hit a leaf node (corresponding to a complete
-/// CoveringGraph). Heuristically, short relators (especially ones shorter
+/// CoveringSubgraph). Heuristically, short relators (especially ones shorter
 /// than max_degree) prune the tree dramatically. However, checking a long
-/// relator (much longer than max_degree) against an incomplete CoveringGraph
+/// relator (much longer than max_degree) against an incomplete CoveringSubgraph
 /// is often inconclusive and barely prunes the tree while being quite costly.
 ///
 /// Some applications might have a natural of relators into short and long,
@@ -52,7 +52,7 @@ extern const std::string spin_short_strategy;
 ///
 /// Note that while cyclically shifting a relator word or taking its inverse
 /// does not change the finitely presented group, it does make a difference
-/// when trying to lift a word in an incomplete CoveringGraph. To increase
+/// when trying to lift a word in an incomplete CoveringSubgraph. To increase
 /// the opportunities of prunning the tree, this function can (and will by
 /// default) expand the set of given relator words based on the strategy
 /// argument. See spin_short for a description of the default strategy.
