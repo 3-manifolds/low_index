@@ -2,7 +2,7 @@ import unittest
 
 from collections import Counter
 
-from cpp_low_index import *
+from low_index import *
 
 class TestSimsNode(unittest.TestCase):
     def test_doc(self):

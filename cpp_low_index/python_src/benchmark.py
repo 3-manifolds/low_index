@@ -3,9 +3,9 @@ import sys
 import time
 import subprocess
 from tempfile import NamedTemporaryFile
-import cpp_low_index
-from cpp_low_index import permutation_reps
-from cpp_low_index import benchmark_util
+import low_index
+from low_index import permutation_reps
+from low_index import benchmark_util
 
 use_low_level = False
 low_level_multi_threaded = False
@@ -136,24 +136,24 @@ def run_example(ex, num_threads=0):
             num_threads = num_threads))
 
 def run_example_low_level(ex):
-    short_relators = cpp_low_index.spin_short(
-        [ cpp_low_index.parse_word(
+    short_relators = low_index.spin_short(
+        [ low_index.parse_word(
             rank = ex['rank'], word = relator)
           for relator in ex['short relators'] ],
         max_degree = ex['index'])
     long_relators = [
-        cpp_low_index.parse_word(
+        low_index.parse_word(
             rank = ex['rank'], word = relator)
           for relator in ex['long relators'] ]
     if low_level_multi_threaded:
-        tree = cpp_low_index.SimsTreeMultiThreaded(
+        tree = low_index.SimsTreeMultiThreaded(
             rank = ex['rank'],
             max_degree = ex['index'],
             short_relators = short_relators,
             long_relators = long_relators,
-            num_threads = cpp_low_index.hardware_concurrency())
+            num_threads = low_index.hardware_concurrency())
     else:
-        tree = cpp_low_index.SimsTree(
+        tree = low_index.SimsTree(
             rank = ex['rank'],
             max_degree = ex['index'],
             short_relators = short_relators,
@@ -219,7 +219,7 @@ if __name__ == '__main__':
           'with',
           os.cpu_count(),
           'cores (reported by python)/',
-          cpp_low_index.hardware_concurrency(),
+          low_index.hardware_concurrency(),
           'cores (reported by C++)', file=sys.stderr)
     if '-gap' in sys.argv:
         with open('/tmp/benchmark.gap', 'w') as gap_script:
