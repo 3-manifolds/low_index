@@ -1,5 +1,4 @@
-from . import _low_index as implementation
-from ._low_index import permutation_reps
+from ._low_index import *
 
 __version__ = '1.2'
 

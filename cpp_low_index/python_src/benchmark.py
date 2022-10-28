@@ -136,24 +136,24 @@ def run_example(ex, num_threads=0):
             num_threads = num_threads))
 
 def run_example_low_level(ex):
-    short_relators = cpp_low_index._low_index.spin(
-        [ cpp_low_index._low_index.parse_word(
+    short_relators = cpp_low_index.spin_short(
+        [ cpp_low_index.parse_word(
             rank = ex['rank'], word = relator)
           for relator in ex['short relators'] ],
         max_degree = ex['index'])
     long_relators = [
-        cpp_low_index._low_index.parse_word(
+        cpp_low_index.parse_word(
             rank = ex['rank'], word = relator)
           for relator in ex['long relators'] ]
     if low_level_multi_threaded:
-        tree = cpp_low_index._low_index.SimsTreeMultiThreaded(
+        tree = cpp_low_index.SimsTreeMultiThreaded(
             rank = ex['rank'],
             max_degree = ex['index'],
             short_relators = short_relators,
             long_relators = long_relators,
-            num_threads = cpp_low_index._low_index.hardware_concurrency())
+            num_threads = cpp_low_index.hardware_concurrency())
     else:
-        tree = cpp_low_index._low_index.SimsTree(
+        tree = cpp_low_index.SimsTree(
             rank = ex['rank'],
             max_degree = ex['index'],
             short_relators = short_relators,
@@ -219,7 +219,7 @@ if __name__ == '__main__':
           'with',
           os.cpu_count(),
           'cores (reported by python)/',
-          cpp_low_index._low_index.hardware_concurrency(),
+          cpp_low_index.hardware_concurrency(),
           'cores (reported by C++)', file=sys.stderr)
     if '-gap' in sys.argv:
         with open('/tmp/benchmark.gap', 'w') as gap_script:
