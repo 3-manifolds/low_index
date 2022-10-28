@@ -276,18 +276,25 @@ AbstractSimsNode::may_be_minimal() const
 bool
 AbstractSimsNode::_may_be_minimal(const DegreeType basepoint) const
 {
+    // Unfortunately, MS Visual Studio does not support
+    // C99-style Variable Length Arrays, so we allocate a fixed length array.
+    constexpr size_t m = std::numeric_limits<DegreeType>::max() + 1;
+
+    static_assert(m < 1000,
+                  "Allocating too large array on the stack.");
+    
     // We are working with the standard indexing (determined by putting
     // the basepoint at vertex 1) and an alternate indexing determined by
     // a different basepoint.  We construct mappings between the two
     // indexings and store them in the arrays std_to_alt and
     // alt_to_std. (For convenience when dealing with 1-based indices,
     // just ignore the 0 entry).
-    DegreeType std_to_alt[degree()+1];
-    std::memset(std_to_alt, 0, sizeof(std_to_alt));
+    DegreeType std_to_alt[m];
+    std::memset(std_to_alt, 0, sizeof(DegreeType) * (degree() + 1));
 
-    DegreeType alt_to_std[degree()+1];
+    DegreeType alt_to_std[m];
     // It is not necessary to clear alt_to_std
-    std::memset(alt_to_std, 0, sizeof(alt_to_std));
+    std::memset(alt_to_std, 0, sizeof(DegreeType) * (degree() + 1));
 
     // Initial state.
     std_to_alt[basepoint] = 1;
