@@ -304,7 +304,7 @@ AbstractSimsNode::_may_be_minimal(const DegreeType basepoint) const
                     (slot_vertex - 1) * rank() + l];
                 const DegreeType b = edges[
                     (alt_to_std[slot_vertex] - 1) * rank() + l];
-                if (a == 0 or b == 0) {
+                if (a == 0 || b == 0) {
                     // The slot was empty in one indexing, so we cannot decide.
                     return true;
                 }
