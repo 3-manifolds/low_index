@@ -22,7 +22,7 @@ sources = [
 ]
 
 if sys.platform.startswith('win'):
-    extra_compile_args = ['/Ox', '/std:c++11']
+    extra_compile_args = ['/Ox', '/std:c++14']
 else:
     extra_compile_args = ['-O3', '-std=c++11', '-g']
 
