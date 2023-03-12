@@ -6,5 +6,6 @@ dist
 *.aux
 *.log
 *.pdf
+*.pyc
 *.synctex.gz
 __pycache__
