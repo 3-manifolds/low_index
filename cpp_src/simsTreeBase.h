@@ -2,6 +2,7 @@
 #define LOW_INDEX_SIMS_TREE_BASE_H
 
 #include "simsNode.h"
+#include <algorithm>
 
 namespace low_index {
 
