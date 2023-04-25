@@ -22,14 +22,14 @@ def covers_low_index(self, degree, num_threads=0):
         elif len(relators[0]) <= 3*degree:
             short_relators = [rel for rel in relators if len(rel) <= 3*degree]
             long_relators = relators[len(short_relators):]
-            
-    print(len(short_relators), strategy)
-    return [self.cover(H)
-            for H in low_index.permutation_reps(
-                    G.num_generators(),
-                    short_relators, long_relators,
-                    degree, strategy='', num_threads=num_threads)
-            if len(H[0]) == degree]
+
+    start = time.time()
+    reps = low_index.permutation_reps(G.num_generators(),
+                                      short_relators, long_relators,
+                                      degree, strategy=strategy,
+                                      num_threads=num_threads)
+    print('reps done', time.time() - start, len(reps))
+    return [self.cover(H) for H in reps if len(H[0]) == degree]
 
 
 def compare_methods(manifold, num_threads=4):
