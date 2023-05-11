@@ -101,6 +101,28 @@ examples = [
         'index': 7,
     },
     {
+        'group': 'ocube06_06795',
+        'rank': 6,
+        'short relators': ['bdbEED'],
+        'long relators': ['aeecbcAfcbcF',
+                          'bcedeeccDBec',
+                          'aeecfedABaDBeFbcAb',
+                          'aeecaeecfeBeFbcAbcAb'],
+        'index': 4,
+
+    },
+    {
+        'group': 'v3448~irr(1,0)(1,0)(1,0)',
+        'spec': 'XLLvLPLvwLLvwzAzPvPwMLLzAPQAQQQQQkcdjhijoqnswwuBztxGIEAORLTKGPHUOHNSTSWLWRVQOVPQUVUWhssovshsksxtuxphrreckdlpqxreuaxejknrawarjnsjvrncbd_CbbadEBbBDab(1,0)(1,0)(1,0)',
+        'rank': 5,
+        'short relators': ['aaaabccccDDb'],
+        'long relators': ['aaabcECBAAABAAABEEECBAAABaaaabcedAbaaabceCBAAABaaaabcbaaabcDbb',
+            'aaabcdAbaaabceeeedAbaaabceCBAAABBddcDAAAABdAAAABEEECBAAABaaaabcbaaabcDbb',
+            'aaabcdaaabcedAbaaabceeeebaaaaDbaaaadCDCBAAABCBAAAAbaaabcECBAAABaDEbaaabaaabcedAbaaabceeeebaaaadCCCCb',
+            'aaabcdAbaaabceeeedAbaaabceCBAAABaaaabcbaaabcdaaabcedAbaaabceeeebaaaaDbaaaadCaaabcedAbaaabceeeebaaaaDbaaaadCaaabcedAbaaabceeeebaaaadCCCCb'],
+        'index': 4,
+    },
+    {
         'group' : 'Symmetric Group S7',
         'rank' : 2,
         'short relators': [
@@ -133,6 +155,7 @@ def run_example(ex, num_threads=0):
             short_relators = ex['short relators'],
             long_relators = ex['long relators'],
             max_degree = ex['index'],
+            strategy = ex.get('strategy', 'spin_short'),
             num_threads = num_threads))
 
 def run_example_low_level(ex):
@@ -188,7 +211,7 @@ def run_regina(ex):
     print('%d subgroups' % n)
     print('%.3fs'%elapsed)
     sys.stdout.flush()
-    
+
 def translate_to_gap(ex, output):
     output.write('info := "%s; index=%d";\n'%(ex['group'], ex['index']))
     all_relators = ex['short relators'] + ex['long relators']
