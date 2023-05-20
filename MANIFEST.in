@@ -1,3 +1,4 @@
-include cython_src/*.pxi
-include cython_src/*.pyx
-include cython_src/*.c
+include cpp_src/*.cpp
+include cpp_src/*.h
+include cpp_src/pybind11/*.h
+include cpp_src/pybind11/detail/*.h
