@@ -1,6 +1,39 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel",
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "low_index"
+dynamic = ["version"]
+description = "Enumerates low index subgroups of a finitely presented group"
+readme = "README.rst"
+requires-python = ">=3.8"
+authors = [
+  {name = "Marc Culler", email = "culler@marc-culler.info"},
+  {name = "Nathan M. Dunfield", email = "nathan@dunfield.info"},
+  {name = "Matthias Goerner", email = "enischte@gmail.com"},
+]
+classifiers = [
+   "Development Status :: 5 - Production/Stable",
+   "Intended Audience :: Science/Research",
+   "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+   "Operating System :: OS Independent",
+   "Programming Language :: C++",
+   "Programming Language :: Python",
+   "Topic :: Scientific/Engineering :: Mathematics",
 ]
 
+[project.urls]
+Homepage = "https://github.com/3-manifolds/low_index"
+
+[tool.setuptools.dynamic]
+version = {attr = "low_index.__version__"}
+
+[tool.cibuildwheel]
+build = "cp38* cp39* cp310* cp311* cp312* cp313*"
+skip = "*musllinux*"
+archs = "auto64"
+test-command = "python -m low_index.test"
+
+[tool.cibuildwheel.linux]
+repair-wheel-command = "auditwheel repair --strip -w {dest_dir} {wheel}"
