@@ -31,7 +31,7 @@ version = {attr = "low_index.__version__"}
 
 [tool.cibuildwheel]
 build = "cp38* cp39* cp310* cp311* cp312* cp313* cp314*"
-skip = "*musllinux*"
+skip = "*musllinux* cp313t* cp314t*"
 test-command = "python -m low_index.test"
 
 [tool.cibuildwheel.macos]
