@@ -30,7 +30,7 @@ Homepage = "https://github.com/3-manifolds/low_index"
 version = {attr = "low_index.__version__"}
 
 [tool.cibuildwheel]
-build = "cp38* cp39* cp310* cp311* cp312* cp313*"
+build = "cp38* cp39* cp310* cp311* cp312* cp313* cp314*"
 skip = "*musllinux*"
 test-command = "python -m low_index.test"
 
