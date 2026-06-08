@@ -24,7 +24,7 @@ if sys.platform.startswith('win'):
     # versions.
     extra_compile_args = ['/Ox', '/std:c++14', '/MT']
 else:
-    extra_compile_args = ['-O3', '-std=c++11']
+    extra_compile_args = ['-O3', '-std=c++14']
 
 ext_modules = [
     Extension(

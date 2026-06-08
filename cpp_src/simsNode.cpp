@@ -9,10 +9,7 @@ void
 SimsNode::_allocate_memory()
 {
     const _MemoryLayout layout(*this);
-    // C++11:
-    _memory.reset(new uint8_t[layout.size]);
-    // C++14 and later:
-//  _memory = std::make_unique<uint8_t[]>(layout.size);
+    _memory = std::make_unique<uint8_t[]>(layout.size);
     _apply_memory_layout(layout, _memory.get());
 }
 

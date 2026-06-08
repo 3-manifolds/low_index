@@ -35,14 +35,12 @@ permutation_reps(
     // Instantiate appropriate SimsTree implementation
     std::unique_ptr<SimsTreeBase> t;
     if (resolved_num_threads > 1) {
-        t.reset(
-            new SimsTreeMultiThreaded(
+        t = std::make_unique<SimsTreeMultiThreaded>(
                 rank, max_degree, all_short_relators, long_relators,
-                resolved_num_threads));
+                resolved_num_threads);
     } else {
-        t.reset(
-            new SimsTree(
-                rank, max_degree, all_short_relators, long_relators));
+        t = std::make_unique<SimsTree>(
+                rank, max_degree, all_short_relators, long_relators);
     }
 
     // Convert SimsNode's to permutation representations.
