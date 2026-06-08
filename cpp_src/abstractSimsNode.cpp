@@ -98,19 +98,10 @@ AbstractSimsNode::_copy_memory(const AbstractSimsNode &other)
 }
 
 bool
-AbstractSimsNode::relators_may_lift(const std::vector<Relator> &relators,
-				    const std::pair<LetterType, DegreeType> slot,
-				    const DegreeType target)
+AbstractSimsNode::relators_may_lift(const std::vector<Relator> &relators)
 {
     for (size_t n = 0; n < relators.size(); n++) {
         for (DegreeType v = 0; v < degree(); v++) {
-	    DegreeType endVertex = _lift_vertices[n*max_degree() + v];
-	    /// If this is being called immediately after adding an edge then the
-	    /// lift state of a relator cannot have changed unless the lift of its
-	    /// longest liftable initial segment is an endpoint of the new edge.
-	    if (target != 0 && endVertex != slot.second && endVertex != target) {
-	        continue;
-	    }
 	    if (!_relator_may_lift(relators[n], n, v)) {
                 return false;
 	    }

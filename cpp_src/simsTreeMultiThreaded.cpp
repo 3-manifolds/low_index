@@ -33,7 +33,7 @@ SimsTreeMultiThreaded::_recurse(
             return;
         }
         SimsNode copy(n);
-        if (!copy.relators_may_lift(_short_relators, {0,0}, 0)) {
+        if (!copy.relators_may_lift(_short_relators)) {
             return;
         }
         result->complete_nodes.push_back(std::move(copy));
@@ -48,7 +48,7 @@ SimsTreeMultiThreaded::_recurse(
         }
         StackedSimsNode new_subgraph(n);
         new_subgraph.add_edge(slot.first, slot.second, v);
-        if (!new_subgraph.relators_may_lift(_short_relators, slot, v)) {
+        if (!new_subgraph.relators_may_lift(_short_relators)) {
             continue;
         }
         if (!new_subgraph.may_be_minimal()) {

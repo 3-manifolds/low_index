@@ -33,7 +33,7 @@ SimsTree::_recurse(const StackedSimsNode &n)
         // So make a copy - allocating memory on the heap, which we need
         // to do anyway to add the result to _complete_nodes.
         SimsNode copy(n);
-        if (!copy.relators_may_lift(_short_relators, {0,0}, 0)) {
+        if (!copy.relators_may_lift(_short_relators)) {
             return;
         }
         _complete_nodes.push_back(std::move(copy));
@@ -47,13 +47,13 @@ SimsTree::_recurse(const StackedSimsNode &n)
     // Iterate through vertices where this edge could end.
     for (DegreeType v = 1; v <= m; v++) {
         // If there is already an edge with the given label ending at v,
-        // we can add an edge to v.
+        // we cannot add an edge to v.
         if (n.act_by(-slot.first, v) != 0) {
             continue;
         }
         StackedSimsNode new_subgraph(n);
         new_subgraph.add_edge(slot.first, slot.second, v);
-        if (!new_subgraph.relators_may_lift(_short_relators, slot, v)) {
+        if (!new_subgraph.relators_may_lift(_short_relators)) {
             continue;
         }
         if (!new_subgraph.may_be_minimal()) {
